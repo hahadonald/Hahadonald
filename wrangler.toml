@@ -1,0 +1,12 @@
+name = "hahadonald-site"
+main = "src/index.js"
+compatibility_date = "2026-09-01"
+
+[assets]
+directory = "./public"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hahadonald-db"
+database_id = "REPLACE_ME_AFTER_DB_CREATE"
