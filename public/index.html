@@ -2601,9 +2601,10 @@
       if (visible) visibleCount++;
     });
     if (currentTab === 'votes') {
-      var sorted = exhibits.slice().sort(function (a, b) { return currentVoteCount(b) - currentVoteCount(a); });
-      var list = document.getElementById('exhibitList');
-      sorted.forEach(function (ex) { list.appendChild(ex); });
+      var ranked = exhibits.slice().sort(function (a, b) { return currentVoteCount(b) - currentVoteCount(a); });
+      ranked.forEach(function (ex, rank) { ex.style.order = rank; });
+    } else {
+      exhibits.forEach(function (ex) { ex.style.order = ''; });
     }
     document.getElementById('resultsCount').textContent =
       'Showing ' + visibleCount + ' of ' + exhibits.length + ' exhibits';
