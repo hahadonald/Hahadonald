@@ -9,7 +9,7 @@ directory = "./public"
 binding = "ASSETS"
 
 [vars]
-STRIPE_SECRET_KEY = "sk_test_PASTE_YOUR_REAL_SANDBOX_KEY_HERE"
+STRIPE_SECRET_KEY = "mk_1UEto1H2PuEwLZfc5JFwhIUA"
 
 # D1 production database
 [[d1_databases]]
