@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Donald Files — hahadonald.com</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper: #EFE6D2;
+    --paper-dark: #E4D8BC;
+    --ink: #2B2620;
+    --ink-soft: #55493A;
+    --redact: #1C1917;
+    --stamp: #A6382C;
+    --folder: #CBA96E;
+    --folder-edge: #B4924F;
+    --tape: #D9CBA3;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background-color: var(--paper);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(0,0,0,0.025) 0, transparent 45%),
+      radial-gradient(circle at 85% 70%, rgba(0,0,0,0.03) 0, transparent 50%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 3px);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    line-height: 1.6;
+  }
+
+  a { color: var(--ink); }
+
+  .stamp-bar {
+    background: var(--redact);
+    color: #EFE6D2;
+    text-align: center;
+    padding: 8px 12px;
+    font-size: 0.72rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+
+  header {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 28px;
+    text-align: center;
+    animation: rise 0.7s ease-out both;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    header { animation: none; }
+  }
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  h1 {
+    font-family: 'Special Elite', cursive;
+    font-size: clamp(2.2rem, 8vw, 3.4rem);
+    margin: 12px 0 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .tagline {
+    font-style: italic;
+    color: var(--ink-soft);
+    font-size: 0.95rem;
+    margin: 0 0 18px;
+  }
+
+  .case-number {
+    display: inline-block;
+    border: 2px solid var(--stamp);
+    color: var(--stamp);
+    padding: 4px 14px;
+    font-size: 0.75rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    transform: rotate(-2deg);
+    mix-blend-mode: multiply;
+  }
+
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 20px 60px;
+  }
+
+  .filter-panel {
+    background: var(--paper-dark);
+    border: 1.5px dashed var(--folder-edge);
+    padding: 4px 20px 18px;
+    margin-bottom: 30px;
+  }
+
+  .filter-panel summary {
+    cursor: pointer;
+    padding: 12px 0;
+    font-family: 'Special Elite', cursive;
+    font-size: 1.05rem;
+    list-style: none;
+  }
+  .filter-panel summary::-webkit-details-marker { display: none; }
+  .filter-panel summary::before { content: "▸ "; }
+  .filter-panel[open] summary::before { content: "▾ "; }
+
+  .filter-group { margin: 14px 0; }
+
+  .filter-group-label {
+    display: block;
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+  }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--folder-edge);
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    background: var(--paper);
+    cursor: pointer;
+    user-select: none;
+  }
+  .chip input { accent-color: var(--stamp); margin: 0; }
+  .chip:has(input:checked) {
+    background: var(--stamp);
+    color: var(--paper);
+    border-color: var(--stamp);
+  }
+  .chip:has(input:checked) input { accent-color: var(--paper); }
+
+  .clear-btn {
+    margin-top: 14px;
+    background: none;
+    border: 1px solid var(--ink-soft);
+    color: var(--ink-soft);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+  }
+  .clear-btn:hover { background: var(--ink-soft); color: var(--paper); }
+
+  .results-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    padding: 0 2px;
+  }
+
+  main { display: flex; flex-direction: column; gap: 34px; }
+
+  .exhibit {
+    position: relative;
+    background: var(--folder);
+    border: 1px solid var(--folder-edge);
+    padding: 26px 24px 22px;
+    box-shadow: 5px 5px 0 rgba(0,0,0,0.14);
+  }
+
+  .exhibit:nth-child(odd)  { transform: rotate(-0.6deg); }
+  .exhibit:nth-child(even) { transform: rotate(0.5deg); }
+
+  .exhibit::before {
+    content: "";
+    position: absolute;
+    top: -10px;
+    left: 28px;
+    width: 64px;
+    height: 22px;
+    background: var(--tape);
+    opacity: 0.85;
+    transform: rotate(-3deg);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.15);
+  }
+
+  .exhibit-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .exhibit-number {
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  .exhibit-date {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1.5px solid var(--stamp);
+    color: var(--stamp);
+    padding: 2px 8px;
+    transform: rotate(2deg);
+    mix-blend-mode: multiply;
+  }
+
+  .exhibit h2 { font-family: 'Special Elite', cursive; font-size: 1.4rem; margin: 0 0 10px; }
+  .exhibit p { margin: 0 0 12px; max-width: 62ch; color: var(--ink); }
+
+  .exhibit .source {
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--ink-soft);
+    border-top: 1px dashed var(--folder-edge);
+    padding-top: 8px;
+    margin: 0 0 14px;
+  }
+
+  .vote-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--paper);
+    border: 1.5px solid var(--folder-edge);
+    padding: 6px 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .vote-btn .thumb { font-size: 0.95rem; }
+  .vote-btn.is-voted {
+    background: var(--stamp);
+    border-color: var(--stamp);
+    color: var(--paper);
+  }
+
+  .verdict {
+    font-family: 'Special Elite', cursive;
+    font-size: 0.92rem;
+    color: var(--redact);
+    margin: 4px 0 14px !important;
+    padding-left: 12px;
+    border-left: 3px solid var(--stamp);
+  }
+  .verdict-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem;
+    color: var(--ink-soft);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: block;
+    margin-top: 3px;
+  }
+
+  .exhibit.is-hidden { display: none; }
+
+  .empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    border: 2px dashed var(--folder-edge);
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  footer {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 20px 24px 60px;
+    text-align: center;
+    font-size: 0.78rem;
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+
+  footer .domain { display: block; margin-top: 6px; font-style: normal; letter-spacing: 0.08em; }
+</style>
+</head>
+<body>
+
+  <div class="stamp-bar">Declassified — for public amusement only</div>
+
+  <header>
+    <span class="case-number">Case file: hahadonald.com</span>
+    <h1>The Donald Files</h1>
+    <p class="tagline">An ongoing declassification of questionable decisions, unforced errors, and one unfortunate marker.</p>
+  </header>
+
+  <div class="wrap">
+
+    <!--
+      HOW TO ADD A NEW EXHIBIT:
+      1. Copy an <article class="exhibit"> block below and fill in the text.
+      2. Give it a unique data-id (used for the upvote counter) — just bump the number.
+      3. Add data-* attributes for whichever facets apply. Skip any that don't apply.
+      4. For multiple values in one facet, separate with a pipe: "2019|2020"
+      5. The filter panel builds itself from whatever data-* values exist on the page —
+         a facet only appears once at least one exhibit uses it.
+
+      Available facet attributes:
+        data-topic, data-year, data-state, data-city, data-country,
+        data-speaking-country, data-nationality, data-adversary, data-leader,
+        data-family, data-claimtype ("category of lie"), data-market ("market reaction after speech"),
+        data-tradepublic ("publicly disclosed trade")
+    -->
+
+    <details class="filter-panel" id="filterPanel">
+      <summary>Filter the files</summary>
+      <div id="filterGroups"></div>
+      <button class="clear-btn" id="clearBtn" type="button">Clear all filters</button>
+    </details>
+
+    <div class="results-line">
+      <span id="resultsCount">Showing 14 of 14 exhibits</span>
+    </div>
+
+    <main id="exhibitList">
+
+      <article class="exhibit" data-id="ex001"
+        data-topic="Environment & Weather" data-year="2019" data-state="Alabama"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Altered evidence">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 001</span><span class="exhibit-date">Sept 2019</span></div>
+        <h2>The Sharpie Amendment</h2>
+        <p>During a briefing on Hurricane Dorian, a National Weather Service map appeared to have been altered with a black marker to extend the storm's projected path into Alabama — a state the official forecast hadn't included. Nobody in the room ever quite explained who held the pen. The internet gave it a name within the hour: Sharpiegate.</p>
+        <p class="source">Source: NOAA, AP, and most major outlets, September 2019.</p>
+        <p class="verdict">"My favorite part isn't the map — it's that an entire federal agency had to publicly disagree with a Sharpie."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex001" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex002"
+        data-topic="Public Health" data-year="2020" data-city="Washington, D.C."
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Medical misinformation">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 002</span><span class="exhibit-date">Apr 2020</span></div>
+        <h2>The Light Bulb Idea</h2>
+        <p>At a White House coronavirus briefing, the idea of getting disinfectant or UV light "inside the body" to fight the virus was floated out loud as something worth looking into. Poison control hotlines reported a jump in calls the next day. The idea was walked back almost immediately — but not before becoming a permanent case study in what not to say from a podium during a pandemic.</p>
+        <p class="source">Source: White House briefing transcript, April 23, 2020; CDC and poison control statements that followed.</p>
+        <p class="verdict">"The kind of live TV moment where you can watch several staffers age in real time."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex002" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex003"
+        data-topic="Personal Conduct" data-year="2017" data-city="Washington, D.C."
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Ignored safety guidance">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 003</span><span class="exhibit-date">Aug 2017</span></div>
+        <h2>Eclipse, But Make It Ill-Advised</h2>
+        <p>Millions of Americans dutifully wore their paper glasses for the August 2017 total solar eclipse. One person, watching from the White House balcony, looked straight up at the sun without them — caught on camera, forever, while an aide can be heard off-screen saying "don't look."</p>
+        <p class="source">Source: widely captured on video and reported at the time, August 21, 2017.</p>
+        <p class="verdict">"In fairness, everyone wants to look directly at the thing everyone told them not to. Most people just don't."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex003" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex004"
+        data-topic="Media & Communications" data-year="2017"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Unexplained statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 004</span><span class="exhibit-date">May 2017</span></div>
+        <h2>Covfefe</h2>
+        <p>A late-night tweet ended mid-sentence with the word "covfefe" — not a typo anyone could parse, not a word in any language, never explained. It was deleted hours later, but not before earning its own Wikipedia entry and a press secretary joke that "a small group" of people understood exactly what it meant.</p>
+        <p class="source">Source: the tweet itself, May 31, 2017 (since deleted).</p>
+        <p class="verdict">"Nine letters, zero meaning, permanent residency in the dictionary of internet culture."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex004" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex005"
+        data-topic="History & Facts" data-year="2017"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Historical inaccuracy">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 005</span><span class="exhibit-date">May 2017</span></div>
+        <h2>A History Lesson, Abridged</h2>
+        <p>In a radio interview, Andrew Jackson was described as having been "really angry" about the Civil War, wondering aloud "why could that one not have been worked out." Jackson died in 1845 — sixteen years before the Civil War began. Historians did not need to be asked twice for comment.</p>
+        <p class="source">Source: SiriusXM interview, May 1, 2017, widely covered at the time.</p>
+        <p class="verdict">"History teachers everywhere quietly closed their laptops."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex005" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex006"
+        data-topic="Environment & Energy" data-year="2019|2020"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Scientific falsehood">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 006</span><span class="exhibit-date">2019 – ongoing</span></div>
+        <h2>Windmills Will Get You</h2>
+        <p>At various rallies since 2019, wind turbines have been blamed for killing birds, crashing property values, and — in a claim with no basis in science — causing cancer "if you're near it." Wind energy researchers issued the same correction more than once, to no evident effect on the material.</p>
+        <p class="source">Source: multiple rally speeches, 2019–2020; fact-checked by PolitiFact and Reuters, among others.</p>
+        <p class="verdict">"Somewhere, a wind turbine is very confused about its diagnosis."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex006" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex007"
+        data-topic="Foreign Policy" data-year="2017" data-city="New York City"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Verbal Slip">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 007</span><span class="exhibit-date">Sept 2017</span></div>
+        <h2>Welcome to Nambia</h2>
+        <p>Addressing African leaders at a UN luncheon, a speech referred to the health system of "Nambia" — a country that does not exist, likely a slip involving Zambia, Namibia, and Gambia. The White House later said it was a typo in the prepared text. The room's reaction, per reporters present, was a mix of confusion and polite silence.</p>
+        <p class="source">Source: UN General Assembly transcript and pool reports, September 20, 2017.</p>
+        <p class="verdict">"A whole country, invented on the spot, at the United Nations. Efficient, if nothing else."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex007" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex008"
+        data-topic="Media & Communications" data-year="2019" data-city="Washington, D.C."
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Verbal Slip">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 008</span><span class="exhibit-date">Mar 2019</span></div>
+        <h2>Tim Apple</h2>
+        <p>Introducing Apple CEO Tim Cook at a White House workforce policy meeting, the name that came out was "Tim Apple." Cook did not correct it in the room. The moment was captured on camera and immediately became its own small piece of internet folklore.</p>
+        <p class="source">Source: White House pool video, March 6, 2019.</p>
+        <p class="verdict">"Cook didn't correct him. Legend has it Cook still hasn't."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex008" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex009"
+        data-topic="Personal Conduct" data-year="2020"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Self-praise">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 009</span><span class="exhibit-date">Jul 2020</span></div>
+        <h2>Person, Woman, Man, Camera, TV</h2>
+        <p>Describing a cognitive screening test in a televised interview, the last part — remembering five words in order — was recounted as proof of a sharp memory: "person, woman, man, camera, TV." Doctors noted this is a standard recall exercise on a screening test, not a measure of exceptional cognitive ability. The phrase outlived the news cycle anyway.</p>
+        <p class="source">Source: Fox News interview, July 19, 2020.</p>
+        <p class="verdict">"Five words, said with the confidence of fifty."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex009" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex010"
+        data-topic="History & Facts" data-year="2017" data-city="Washington, D.C."
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 010</span><span class="exhibit-date">Feb 2017</span></div>
+        <h2>Frederick Douglass, Recognized More and More</h2>
+        <p>At a Black History Month listening session, Frederick Douglass was described as "an example of somebody who's done an amazing job and is being recognized more and more." Douglass died in 1895. The remark was widely read as unclear about whether the historical figure was still living, and press secretary follow-up questions did little to settle it.</p>
+        <p class="source">Source: White House listening session remarks, February 1, 2017.</p>
+        <p class="verdict">"Ambiguous enough to make every historian in America reach for their phone at once."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex010" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex011"
+        data-topic="Media & Communications" data-year="2017" data-city="Washington, D.C."
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 011</span><span class="exhibit-date">Jan 2017</span></div>
+        <h2>The Biggest Crowd, Ever</h2>
+        <p>The inauguration crowd was described as the largest ever assembled for the event. Side-by-side aerial photos comparing it to the 2009 inauguration said otherwise, and the National Park Service's own crowd estimates backed the photos. The press secretary defended the claim from the podium; a senior advisor later described the defense as offering "alternative facts," a phrase that outlived the argument itself.</p>
+        <p class="source">Source: National Park Service imagery and multiple news outlets, January 21–22, 2017.</p>
+        <p class="verdict">"The photos didn't lie. Everything else in the room did its best to."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex011" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex012"
+        data-topic="Personal Conduct" data-year="2016" data-state="Virginia"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Verbal Slip">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 012</span><span class="exhibit-date">Jan 2016</span></div>
+        <h2>Two Corinthians</h2>
+        <p>Quoting scripture at a Liberty University commencement address, "Two Corinthians 3:17" was read aloud where the conventional phrasing is "Second Corinthians." It's a small thing, but it's the kind of small thing a room full of Bible college students notices immediately.</p>
+        <p class="source">Source: Liberty University convocation address, January 18, 2016.</p>
+        <p class="verdict">"A room full of Bible students, and you could hear every single one of them notice."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex012" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex013"
+        data-topic="Personal Conduct" data-year="2017" data-city="San Juan"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Insensitive gesture">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 013</span><span class="exhibit-date">Oct 2017</span></div>
+        <h2>Paper Towels</h2>
+        <p>Visiting Puerto Rico after Hurricane Maria devastated the island, rolls of paper towels were tossed into a crowd at a supply distribution site, basketball-style. The footage was replayed for weeks as a symbol of a relief effort widely criticized at the time as too slow and too small.</p>
+        <p class="source">Source: pool video from the San Juan visit, October 3, 2017.</p>
+        <p class="verdict">"The throw had good form. Everything around it did not."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex013" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex014"
+        data-topic="Foreign Policy" data-year="2017" data-city="New York City"
+        data-country="North Korea" data-adversary="North Korea" data-leader="Kim Jong Un"
+        data-speaking-country="United States" data-nationality="American" data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 014</span><span class="exhibit-date">Sept 2017</span></div>
+        <h2>Rocket Man</h2>
+        <p>Addressing the UN General Assembly, North Korea's leader was referred to as "Rocket Man," a nickname repeated in speeches and tweets for months afterward amid rising tension over the North's missile program. Foreign policy commentators were split on whether it was a calculated pressure tactic or just an easy line that stuck.</p>
+        <p class="source">Source: UN General Assembly address, September 19, 2017, and subsequent statements.</p>
+        <p class="verdict">"A nickname that outlived several actual policy positions."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <button class="vote-btn" data-id="ex014" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+    </main>
+
+    <div class="empty-state" id="emptyState" style="display:none;">
+      No exhibits match that combination. Try clearing a filter.
+    </div>
+
+  </div>
+
+  <footer>
+    Satire and commentary based on publicly reported events. Filed for entertainment, not for the historical record.
+    <span class="domain">hahadonald.com</span>
+  </footer>
+
+<script>
+(function () {
+  var FACETS = [
+    { key: 'topic', label: 'Topic' },
+    { key: 'year', label: 'Year' },
+    { key: 'state', label: 'American state mentioned' },
+    { key: 'city', label: 'American city mentioned' },
+    { key: 'country', label: 'Country mentioned' },
+    { key: 'speaking-country', label: 'Country he was in when he spoke' },
+    { key: 'nationality', label: 'Nationality mentioned' },
+    { key: 'adversary', label: 'Adversary mentioned' },
+    { key: 'leader', label: 'Foreign leader mentioned' },
+    { key: 'family', label: 'Trump family member mentioned' },
+    { key: 'claimtype', label: 'Category of lie' },
+    { key: 'market', label: 'Market reaction after speech' },
+    { key: 'tradepublic', label: 'Publicly disclosed trade' }
+  ];
+
+  var exhibits = Array.prototype.slice.call(document.querySelectorAll('.exhibit'));
+  var selected = {};
+  var groupsContainer = document.getElementById('filterGroups');
+
+  function readTags(article, key) {
+    var raw = article.getAttribute('data-' + key);
+    if (!raw) return [];
+    return raw.split('|').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+
+  FACETS.forEach(function (facet) {
+    var values = new Set();
+    exhibits.forEach(function (ex) {
+      readTags(ex, facet.key).forEach(function (v) { values.add(v); });
+    });
+    if (values.size === 0) return;
+
+    selected[facet.key] = new Set();
+
+    var group = document.createElement('div');
+    group.className = 'filter-group';
+
+    var label = document.createElement('span');
+    label.className = 'filter-group-label';
+    label.textContent = facet.label;
+    group.appendChild(label);
+
+    var row = document.createElement('div');
+    row.className = 'chip-row';
+
+    Array.from(values).sort().forEach(function (val) {
+      var chip = document.createElement('label');
+      chip.className = 'chip';
+      var input = document.createElement('input');
+      input.type = 'checkbox';
+      input.value = val;
+      input.addEventListener('change', function () {
+        if (input.checked) selected[facet.key].add(val);
+        else selected[facet.key].delete(val);
+        applyFilters();
+      });
+      chip.appendChild(input);
+      chip.appendChild(document.createTextNode(val));
+      row.appendChild(chip);
+    });
+
+    group.appendChild(row);
+    groupsContainer.appendChild(group);
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function () {
+    Object.keys(selected).forEach(function (k) { selected[k].clear(); });
+    groupsContainer.querySelectorAll('input[type=checkbox]').forEach(function (cb) { cb.checked = false; });
+    applyFilters();
+  });
+
+  function applyFilters() {
+    var visibleCount = 0;
+    exhibits.forEach(function (ex) {
+      var matches = Object.keys(selected).every(function (key) {
+        var chosen = selected[key];
+        if (chosen.size === 0) return true;
+        var tags = readTags(ex, key);
+        return tags.some(function (t) { return chosen.has(t); });
+      });
+      ex.classList.toggle('is-hidden', !matches);
+      if (matches) visibleCount++;
+    });
+    document.getElementById('resultsCount').textContent =
+      'Showing ' + visibleCount + ' of ' + exhibits.length + ' exhibits';
+    document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+  }
+
+  applyFilters();
+
+  // Upvotes — stored per-browser in localStorage. Not shared across visitors.
+  var VOTES_KEY = 'hahadonald_votes_v1';
+  function loadVotes() {
+    try { return JSON.parse(localStorage.getItem(VOTES_KEY)) || {}; }
+    catch (e) { return {}; }
+  }
+  function saveVotes(v) {
+    try { localStorage.setItem(VOTES_KEY, JSON.stringify(v)); } catch (e) {}
+  }
+  var votes = loadVotes();
+
+  function renderVote(btn, record) {
+    btn.querySelector('.vote-count').textContent = record.count;
+    btn.classList.toggle('is-voted', record.voted);
+    btn.setAttribute('aria-pressed', record.voted ? 'true' : 'false');
+  }
+
+  document.querySelectorAll('.vote-btn').forEach(function (btn) {
+    var id = btn.getAttribute('data-id');
+    var record = votes[id] || { count: 0, voted: false };
+    votes[id] = record;
+    renderVote(btn, record);
+    btn.addEventListener('click', function () {
+      record.voted = !record.voted;
+      record.count += record.voted ? 1 : -1;
+      if (record.count < 0) record.count = 0;
+      saveVotes(votes);
+      renderVote(btn, record);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>
