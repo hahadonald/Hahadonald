@@ -7,6 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
 <style>
   :root{
     --paper: #EFE6D2;
@@ -281,6 +282,81 @@
     font-style: italic;
   }
 
+  .support {
+    background: var(--paper-dark);
+    border: 1.5px dashed var(--folder-edge);
+    padding: 22px 24px 26px;
+    margin: 0 0 30px;
+  }
+  .support h2 {
+    font-family: 'Special Elite', cursive;
+    font-size: 1.3rem;
+    margin: 0 0 6px;
+  }
+  .support-blurb {
+    font-size: 0.85rem;
+    color: var(--ink-soft);
+    margin: 0 0 16px;
+  }
+  .amount-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+  .amount-btn {
+    border: 1.5px solid var(--folder-edge);
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  .amount-btn.is-selected {
+    background: var(--stamp);
+    border-color: var(--stamp);
+    color: var(--paper);
+  }
+  #payment-element { display: none; margin: 14px 0; }
+  .donate-submit {
+    background: var(--stamp);
+    color: var(--paper);
+    border: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+    padding: 10px 20px;
+    cursor: pointer;
+  }
+  .donate-submit:disabled { opacity: 0.6; cursor: default; }
+  .donate-status {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    margin: 10px 0 0;
+    min-height: 1.2em;
+  }
+  .crypto-tip {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px dashed var(--folder-edge);
+  }
+  .crypto-tip h3 {
+    font-family: 'Special Elite', cursive;
+    font-size: 1rem;
+    margin: 0 0 10px;
+  }
+  .crypto-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin: 10px 0 3px;
+  }
+  .wallet-address {
+    display: block;
+    background: var(--paper);
+    border: 1px solid var(--folder-edge);
+    padding: 8px 10px;
+    font-size: 0.78rem;
+    word-break: break-all;
+    color: var(--ink);
+  }
+
   footer {
     max-width: 720px;
     margin: 0 auto;
@@ -497,6 +573,30 @@
 
   </div>
 
+  <div class="wrap">
+    <section class="support" id="support">
+      <h2>Support the Curator</h2>
+      <p class="support-blurb">Tips help keep the servers running and the case files growing.</p>
+      <div class="amount-row" id="amountRow">
+        <button class="amount-btn" data-amount="300">$3</button>
+        <button class="amount-btn is-selected" data-amount="500">$5</button>
+        <button class="amount-btn" data-amount="1000">$10</button>
+        <button class="amount-btn" data-amount="2500">$25</button>
+      </div>
+      <div id="payment-element"></div>
+      <button id="submitDonate" class="donate-submit">Continue — $5</button>
+      <p id="donateStatus" class="donate-status"></p>
+
+      <div class="crypto-tip">
+        <h3>Or send crypto</h3>
+        <p class="crypto-label">BTC</p>
+        <code class="wallet-address" id="btcAddress">YOUR_BTC_ADDRESS_HERE</code>
+        <p class="crypto-label">ETH</p>
+        <code class="wallet-address" id="ethAddress">YOUR_ETH_ADDRESS_HERE</code>
+      </div>
+    </section>
+  </div>
+
   <footer>
     Satire and commentary based on publicly reported events. Filed for entertainment, not for the historical record.
     <span class="domain">hahadonald.com</span>
@@ -594,6 +694,101 @@
   }
 
   applyFilters();
+
+  // Donations — Stripe Elements, mounted only after the visitor picks an
+  // amount and hits Continue. The secret key never touches this file;
+  // the PaymentIntent is created server-side by the Worker.
+  (function () {
+    var STRIPE_PUBLISHABLE_KEY = 'pk_test_51UEsnOH2PuEwLZfcgeYOnOE6JzojYaPjVvm4nnYrTVn6t43osobBnkCWaZTUKUawRM2gEEIUXRxrZ9fcnToCwlph00p4kvdwtT';
+    var stripe = window.Stripe ? window.Stripe(STRIPE_PUBLISHABLE_KEY) : null;
+    var elements = null;
+    var selectedAmount = 500;
+    var intentReady = false;
+
+    var amountButtons = document.querySelectorAll('.amount-btn');
+    var submitBtn = document.getElementById('submitDonate');
+    var statusEl = document.getElementById('donateStatus');
+    var paymentBox = document.getElementById('payment-element');
+
+    function resetPaymentStep() {
+      intentReady = false;
+      elements = null;
+      paymentBox.innerHTML = '';
+      paymentBox.style.display = 'none';
+      submitBtn.textContent = 'Continue — $' + (selectedAmount / 100).toFixed(0);
+    }
+
+    amountButtons.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        amountButtons.forEach(function (b) { b.classList.remove('is-selected'); });
+        btn.classList.add('is-selected');
+        selectedAmount = parseInt(btn.getAttribute('data-amount'), 10);
+        resetPaymentStep();
+      });
+    });
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', async function () {
+        if (!stripe) {
+          statusEl.textContent = 'Payment form unavailable right now.';
+          return;
+        }
+
+        if (!intentReady) {
+          submitBtn.disabled = true;
+          statusEl.textContent = 'Loading payment form...';
+          try {
+            var res = await fetch('/api/donate/create-intent', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ amount: selectedAmount, currency: 'usd' })
+            });
+            var data = await res.json();
+            if (!data.clientSecret) throw new Error(data.error || 'no client secret');
+
+            elements = stripe.elements({
+              clientSecret: data.clientSecret,
+              appearance: {
+                theme: 'flat',
+                variables: {
+                  colorPrimary: '#A6382C',
+                  colorBackground: '#EFE6D2',
+                  colorText: '#2B2620',
+                  fontFamily: 'IBM Plex Mono, monospace',
+                  borderRadius: '0px'
+                }
+              }
+            });
+            var paymentElement = elements.create('payment');
+            paymentElement.mount('#payment-element');
+            paymentBox.style.display = 'block';
+            intentReady = true;
+            submitBtn.textContent = 'Pay $' + (selectedAmount / 100).toFixed(0);
+            statusEl.textContent = '';
+          } catch (err) {
+            statusEl.textContent = 'Could not load payment form. Try again shortly.';
+          }
+          submitBtn.disabled = false;
+          return;
+        }
+
+        submitBtn.disabled = true;
+        statusEl.textContent = 'Processing...';
+        var result = await stripe.confirmPayment({
+          elements: elements,
+          confirmParams: { return_url: window.location.href },
+          redirect: 'if_required'
+        });
+        if (result.error) {
+          statusEl.textContent = result.error.message || 'Payment failed.';
+          submitBtn.disabled = false;
+        } else {
+          statusEl.textContent = 'Thank you — genuinely.';
+          submitBtn.style.display = 'none';
+        }
+      });
+    }
+  })();
 
   // Upvotes — real, shared counts via the /api/vote Worker route + D1.
   // A first-time visitor gets an anonymous cookie so a click toggles their
