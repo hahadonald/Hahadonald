@@ -106,8 +106,9 @@ async function handleCreateDonationIntent(request, env) {
   const amount = body && body.amount;
   const currency = (body && body.currency) || "usd";
 
-  // Basic sanity bounds: $1 minimum, $1,000 maximum, whole-cent integer only.
-  if (!Number.isInteger(amount) || amount < 100 || amount > 100000) {
+  // $1 minimum, $50,000 maximum, whole-cent integer only — high enough
+  // to let a serious donor through, sane enough to catch a stray typo.
+  if (!Number.isInteger(amount) || amount < 100 || amount > 5000000) {
     return jsonResponse({ error: "invalid amount" }, 400);
   }
 
