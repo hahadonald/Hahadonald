@@ -324,12 +324,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: var(--paper);
-    border: 1.5px solid var(--folder-edge);
+    background: #2C3539;
+    border: 1.5px solid #1C2326;
     padding: 6px 12px;
     font-family: 'IBM Plex Mono', monospace;
     font-size: 0.8rem;
-    color: var(--ink);
+    color: var(--paper);
     cursor: pointer;
   }
   .vote-btn .thumb { font-size: 0.95rem; }
@@ -2608,6 +2608,12 @@
     document.getElementById('resultsCount').textContent =
       'Showing ' + visibleCount + ' of ' + exhibits.length + ' exhibits';
     document.getElementById('emptyState').style.display = visibleCount === 0 ? 'block' : 'none';
+
+    var anyFacetActive = Object.keys(selected).some(function (k) { return selected[k].size > 0; });
+    var filtersActive = anyFacetActive || currentTab !== 'all';
+    document.querySelectorAll('.mid-nudge').forEach(function (el) {
+      el.style.display = filtersActive ? 'none' : '';
+    });
   }
 
   document.querySelectorAll('.tab-btn[data-tab]').forEach(function (btn) {
