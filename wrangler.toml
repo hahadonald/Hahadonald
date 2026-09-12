@@ -8,15 +8,11 @@ workers_dev = true
 directory = "./public"
 binding = "ASSETS"
 
+[vars]
+STRIPE_SECRET_KEY = "sk_test_PASTE_YOUR_REAL_SANDBOX_KEY_HERE"
+
 # D1 production database
 [[d1_databases]]
 binding = "DB"
 database_name = "hahadonald-db"
 database_id = "8bb05c0d-2ed7-40c9-8413-b798ce4a3f26"
-
-# Optional: Development environment with separate DB
-# [env.development]
-# [[env.development.d1_databases]]
-# binding = "DB"
-# database_name = "hahadonald-db-dev"
-# database_id = "your-dev-db-id-here"
