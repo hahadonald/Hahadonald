@@ -9,7 +9,7 @@ directory = "./public"
 binding = "ASSETS"
 
 [vars]
-STRIPE_SECRET_KEY = "mk_1UEto1H2PuEwLZfc5JFwhIUA"
+STRIPE_SECRET_KEY = "sk_test_51UEsnOH2PuEwLZfc2p62ZXJ6v6Yochf7jDxKVaZvZwhkafRDexHlmwpy0sCyXXXplRYWLxsHrpNDBuyMLxyn5G6200jvU7jJFb"
 
 # D1 production database
 [[d1_databases]]
