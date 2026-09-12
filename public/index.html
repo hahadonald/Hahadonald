@@ -595,34 +595,41 @@
 
   applyFilters();
 
-  // Upvotes — stored per-browser in localStorage. Not shared across visitors.
-  var VOTES_KEY = 'hahadonald_votes_v1';
-  function loadVotes() {
-    try { return JSON.parse(localStorage.getItem(VOTES_KEY)) || {}; }
-    catch (e) { return {}; }
-  }
-  function saveVotes(v) {
-    try { localStorage.setItem(VOTES_KEY, JSON.stringify(v)); } catch (e) {}
-  }
-  var votes = loadVotes();
+  // Upvotes — real, shared counts via the /api/vote Worker route + D1.
+  // A first-time visitor gets an anonymous cookie so a click toggles their
+  // own vote on/off; nobody else's vote is affected.
+  var voteButtons = Array.prototype.slice.call(document.querySelectorAll('.vote-btn'));
 
-  function renderVote(btn, record) {
-    btn.querySelector('.vote-count').textContent = record.count;
-    btn.classList.toggle('is-voted', record.voted);
-    btn.setAttribute('aria-pressed', record.voted ? 'true' : 'false');
+  function renderVote(btn, count, voted) {
+    btn.querySelector('.vote-count').textContent = count;
+    btn.classList.toggle('is-voted', !!voted);
+    btn.setAttribute('aria-pressed', voted ? 'true' : 'false');
   }
 
-  document.querySelectorAll('.vote-btn').forEach(function (btn) {
-    var id = btn.getAttribute('data-id');
-    var record = votes[id] || { count: 0, voted: false };
-    votes[id] = record;
-    renderVote(btn, record);
+  fetch('/api/vote')
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .then(function (counts) {
+      voteButtons.forEach(function (btn) {
+        var id = btn.getAttribute('data-id');
+        renderVote(btn, counts[id] || 0, btn.classList.contains('is-voted'));
+      });
+    })
+    .catch(function () { /* counts just stay at 0 if the API is unreachable */ });
+
+  voteButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
-      record.voted = !record.voted;
-      record.count += record.voted ? 1 : -1;
-      if (record.count < 0) record.count = 0;
-      saveVotes(votes);
-      renderVote(btn, record);
+      if (btn.disabled) return;
+      var id = btn.getAttribute('data-id');
+      btn.disabled = true;
+      fetch('/api/vote', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ exhibitId: id })
+      })
+        .then(function (r) { return r.json(); })
+        .then(function (data) { renderVote(btn, data.count, data.voted); })
+        .catch(function () { /* leave the button as it was on failure */ })
+        .finally(function () { btn.disabled = false; });
     });
   });
 })();
