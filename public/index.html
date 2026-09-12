@@ -766,7 +766,7 @@
             submitBtn.textContent = 'Pay $' + (selectedAmount / 100).toFixed(0);
             statusEl.textContent = '';
           } catch (err) {
-            statusEl.textContent = 'Could not load payment form. Try again shortly.';
+            statusEl.textContent = 'Error: ' + (err && err.message ? err.message : 'unknown failure');
           }
           submitBtn.disabled = false;
           return;
