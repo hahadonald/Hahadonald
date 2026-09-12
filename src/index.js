@@ -126,7 +126,11 @@ async function handleCreateDonationIntent(request, env) {
   });
 
   if (!stripeRes.ok) {
-    return jsonResponse({ error: "stripe request failed" }, 502);
+    const errBody = await stripeRes.json().catch(() => null);
+    const detail = errBody && errBody.error && errBody.error.message
+      ? errBody.error.message
+      : `stripe returned ${stripeRes.status}`;
+    return jsonResponse({ error: detail }, 502);
   }
 
   const intent = await stripeRes.json();
