@@ -9,4 +9,4 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "hahadonald-db"
-database_id = "REPLACE_ME_AFTER_DB_CREATE"
+database_id = "8bb05c0d-2ed7-40c9-8413-b798ce4a3f26"
