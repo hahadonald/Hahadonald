@@ -14,12 +14,6 @@ export default {
       return handleCreateDonationIntent(request, env);
     }
 
-    // Temporary diagnostic — lists binding NAMES only, never values.
-    // Delete this route once the secret issue is confirmed fixed.
-    if (url.pathname === "/api/debug/env-keys" && request.method === "GET") {
-      return jsonResponse({ keys: Object.keys(env) });
-    }
-
     if (url.pathname === "/api/stripe/webhook" && request.method === "POST") {
       return handleStripeWebhook(request, env);
     }
