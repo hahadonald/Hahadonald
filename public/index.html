@@ -6,7 +6,7 @@
 <title>The Donald Files — hahadonald.com</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <script src="https://js.stripe.com/v3/"></script>
 <style>
   :root{
@@ -27,11 +27,13 @@
     margin: 0;
     background-color: var(--paper);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(0,0,0,0.025) 0, transparent 45%),
-      radial-gradient(circle at 85% 70%, rgba(0,0,0,0.03) 0, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E"),
+      radial-gradient(circle at 15% 20%, rgba(0,0,0,0.03) 0, transparent 45%),
+      radial-gradient(circle at 85% 70%, rgba(0,0,0,0.035) 0, transparent 50%),
       repeating-linear-gradient(0deg, rgba(0,0,0,0.015) 0px, rgba(0,0,0,0.015) 1px, transparent 1px, transparent 3px);
     color: var(--ink);
     font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
     line-height: 1.6;
   }
 
@@ -111,8 +113,17 @@
     list-style: none;
   }
   .filter-panel summary::-webkit-details-marker { display: none; }
-  .filter-panel summary::before { content: "▸ "; }
-  .filter-panel[open] summary::before { content: "▾ "; }
+  .filter-panel summary::before {
+    content: "";
+    display: inline-block;
+    width: 15px;
+    height: 15px;
+    margin-right: 6px;
+    vertical-align: -2px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232B2620' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cline x1='21' y1='21' x2='16.5' y2='16.5'/%3E%3C/svg%3E") no-repeat center / contain;
+  }
+  .filter-panel summary::after { content: " ▸"; float: right; }
+  .filter-panel[open] summary::after { content: " ▾"; }
 
   .filter-group { margin: 14px 0; }
 
@@ -177,7 +188,24 @@
     background: var(--folder);
     border: 1px solid var(--folder-edge);
     padding: 26px 24px 22px;
-    box-shadow: 5px 5px 0 rgba(0,0,0,0.14);
+    box-shadow:
+      4px 4px 0 var(--paper-dark),
+      8px 8px 0 var(--folder-edge),
+      8px 8px 16px rgba(0,0,0,0.16);
+  }
+
+  .exhibit::after {
+    content: "";
+    position: absolute;
+    top: -11px;
+    right: 22px;
+    width: 30px;
+    height: 30px;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%232B2620' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48'/%3E%3C/svg%3E") no-repeat center / contain;
+    transform: rotate(28deg);
+    z-index: 2;
+    pointer-events: none;
+    filter: drop-shadow(1px 2px 1px rgba(0,0,0,0.25));
   }
 
   .exhibit:nth-child(odd)  { transform: rotate(-0.6deg); }
@@ -313,6 +341,40 @@
     border-color: var(--stamp);
     color: var(--paper);
   }
+  .dare-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .dare-label {
+    font-size: 0.82rem;
+    font-style: italic;
+    color: var(--ink-soft);
+  }
+  .custom-amount-box {
+    display: flex;
+    align-items: center;
+    border: 1.5px dashed var(--folder-edge);
+    background: var(--paper);
+  }
+  .dollar-prefix {
+    padding: 0 0 0 10px;
+    font-size: 0.9rem;
+    color: var(--ink-soft);
+  }
+  #customAmount {
+    width: 90px;
+    border: none;
+    background: none;
+    font-family: 'IBM Plex Mono', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--ink);
+    padding: 7px 8px;
+  }
+  #customAmount:focus { outline: none; }
   #payment-element { display: none; margin: 14px 0; }
   .donate-submit {
     background: var(--stamp);
@@ -417,7 +479,7 @@
         <h2>The Sharpie Amendment</h2>
         <p>During a briefing on Hurricane Dorian, a National Weather Service map appeared to have been altered with a black marker to extend the storm's projected path into Alabama — a state the official forecast hadn't included. Nobody in the room ever quite explained who held the pen. The internet gave it a name within the hour: Sharpiegate.</p>
         <p class="source">Source: NOAA, AP, and most major outlets, September 2019.</p>
-        <p class="verdict">"My favorite part isn't the map — it's that an entire federal agency had to publicly disagree with a Sharpie."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"My favorite part isn't the map — it's that an entire federal agency had to publicly disagree with a Sharpie."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex001" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -428,7 +490,7 @@
         <h2>The Light Bulb Idea</h2>
         <p>At a White House coronavirus briefing, the idea of getting disinfectant or UV light "inside the body" to fight the virus was floated out loud as something worth looking into. Poison control hotlines reported a jump in calls the next day. The idea was walked back almost immediately — but not before becoming a permanent case study in what not to say from a podium during a pandemic.</p>
         <p class="source">Source: White House briefing transcript, April 23, 2020; CDC and poison control statements that followed.</p>
-        <p class="verdict">"The kind of live TV moment where you can watch several staffers age in real time."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"The kind of live TV moment where you can watch several staffers age in real time."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex002" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -439,7 +501,7 @@
         <h2>Eclipse, But Make It Ill-Advised</h2>
         <p>Millions of Americans dutifully wore their paper glasses for the August 2017 total solar eclipse. One person, watching from the White House balcony, looked straight up at the sun without them — caught on camera, forever, while an aide can be heard off-screen saying "don't look."</p>
         <p class="source">Source: widely captured on video and reported at the time, August 21, 2017.</p>
-        <p class="verdict">"In fairness, everyone wants to look directly at the thing everyone told them not to. Most people just don't."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"In fairness, everyone wants to look directly at the thing everyone told them not to. Most people just don't."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex003" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -450,7 +512,7 @@
         <h2>Covfefe</h2>
         <p>A late-night tweet ended mid-sentence with the word "covfefe" — not a typo anyone could parse, not a word in any language, never explained. It was deleted hours later, but not before earning its own Wikipedia entry and a press secretary joke that "a small group" of people understood exactly what it meant.</p>
         <p class="source">Source: the tweet itself, May 31, 2017 (since deleted).</p>
-        <p class="verdict">"Nine letters, zero meaning, permanent residency in the dictionary of internet culture."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"Nine letters, zero meaning, permanent residency in the dictionary of internet culture."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex004" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -461,7 +523,7 @@
         <h2>A History Lesson, Abridged</h2>
         <p>In a radio interview, Andrew Jackson was described as having been "really angry" about the Civil War, wondering aloud "why could that one not have been worked out." Jackson died in 1845 — sixteen years before the Civil War began. Historians did not need to be asked twice for comment.</p>
         <p class="source">Source: SiriusXM interview, May 1, 2017, widely covered at the time.</p>
-        <p class="verdict">"History teachers everywhere quietly closed their laptops."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"History teachers everywhere quietly closed their laptops."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex005" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -472,7 +534,7 @@
         <h2>Windmills Will Get You</h2>
         <p>At various rallies since 2019, wind turbines have been blamed for killing birds, crashing property values, and — in a claim with no basis in science — causing cancer "if you're near it." Wind energy researchers issued the same correction more than once, to no evident effect on the material.</p>
         <p class="source">Source: multiple rally speeches, 2019–2020; fact-checked by PolitiFact and Reuters, among others.</p>
-        <p class="verdict">"Somewhere, a wind turbine is very confused about its diagnosis."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"Somewhere, a wind turbine is very confused about its diagnosis."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex006" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -483,7 +545,7 @@
         <h2>Welcome to Nambia</h2>
         <p>Addressing African leaders at a UN luncheon, a speech referred to the health system of "Nambia" — a country that does not exist, likely a slip involving Zambia, Namibia, and Gambia. The White House later said it was a typo in the prepared text. The room's reaction, per reporters present, was a mix of confusion and polite silence.</p>
         <p class="source">Source: UN General Assembly transcript and pool reports, September 20, 2017.</p>
-        <p class="verdict">"A whole country, invented on the spot, at the United Nations. Efficient, if nothing else."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"A whole country, invented on the spot, at the United Nations. Efficient, if nothing else."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex007" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -494,7 +556,7 @@
         <h2>Tim Apple</h2>
         <p>Introducing Apple CEO Tim Cook at a White House workforce policy meeting, the name that came out was "Tim Apple." Cook did not correct it in the room. The moment was captured on camera and immediately became its own small piece of internet folklore.</p>
         <p class="source">Source: White House pool video, March 6, 2019.</p>
-        <p class="verdict">"Cook didn't correct him. Legend has it Cook still hasn't."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"Cook didn't correct him. Legend has it Cook still hasn't."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex008" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -505,7 +567,7 @@
         <h2>Person, Woman, Man, Camera, TV</h2>
         <p>Describing a cognitive screening test in a televised interview, the last part — remembering five words in order — was recounted as proof of a sharp memory: "person, woman, man, camera, TV." Doctors noted this is a standard recall exercise on a screening test, not a measure of exceptional cognitive ability. The phrase outlived the news cycle anyway.</p>
         <p class="source">Source: Fox News interview, July 19, 2020.</p>
-        <p class="verdict">"Five words, said with the confidence of fifty."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"Five words, said with the confidence of fifty."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex009" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -516,7 +578,7 @@
         <h2>Frederick Douglass, Recognized More and More</h2>
         <p>At a Black History Month listening session, Frederick Douglass was described as "an example of somebody who's done an amazing job and is being recognized more and more." Douglass died in 1895. The remark was widely read as unclear about whether the historical figure was still living, and press secretary follow-up questions did little to settle it.</p>
         <p class="source">Source: White House listening session remarks, February 1, 2017.</p>
-        <p class="verdict">"Ambiguous enough to make every historian in America reach for their phone at once."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"Ambiguous enough to make every historian in America reach for their phone at once."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex010" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -527,7 +589,7 @@
         <h2>The Biggest Crowd, Ever</h2>
         <p>The inauguration crowd was described as the largest ever assembled for the event. Side-by-side aerial photos comparing it to the 2009 inauguration said otherwise, and the National Park Service's own crowd estimates backed the photos. The press secretary defended the claim from the podium; a senior advisor later described the defense as offering "alternative facts," a phrase that outlived the argument itself.</p>
         <p class="source">Source: National Park Service imagery and multiple news outlets, January 21–22, 2017.</p>
-        <p class="verdict">"The photos didn't lie. Everything else in the room did its best to."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"The photos didn't lie. Everything else in the room did its best to."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex011" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -538,7 +600,7 @@
         <h2>Two Corinthians</h2>
         <p>Quoting scripture at a Liberty University commencement address, "Two Corinthians 3:17" was read aloud where the conventional phrasing is "Second Corinthians." It's a small thing, but it's the kind of small thing a room full of Bible college students notices immediately.</p>
         <p class="source">Source: Liberty University convocation address, January 18, 2016.</p>
-        <p class="verdict">"A room full of Bible students, and you could hear every single one of them notice."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"A room full of Bible students, and you could hear every single one of them notice."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex012" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -549,7 +611,7 @@
         <h2>Paper Towels</h2>
         <p>Visiting Puerto Rico after Hurricane Maria devastated the island, rolls of paper towels were tossed into a crowd at a supply distribution site, basketball-style. The footage was replayed for weeks as a symbol of a relief effort widely criticized at the time as too slow and too small.</p>
         <p class="source">Source: pool video from the San Juan visit, October 3, 2017.</p>
-        <p class="verdict">"The throw had good form. Everything around it did not."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"The throw had good form. Everything around it did not."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex013" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -561,7 +623,7 @@
         <h2>Rocket Man</h2>
         <p>Addressing the UN General Assembly, North Korea's leader was referred to as "Rocket Man," a nickname repeated in speeches and tweets for months afterward amid rising tension over the North's missile program. Foreign policy commentators were split on whether it was a calculated pressure tactic or just an easy line that stuck.</p>
         <p class="source">Source: UN General Assembly address, September 19, 2017, and subsequent statements.</p>
-        <p class="verdict">"A nickname that outlived several actual policy positions."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"A nickname that outlived several actual policy positions."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex014" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -572,7 +634,7 @@
         <h2>Whatever Happened to Global Warming</h2>
         <p>During a cold snap, a tweet asked "whatever happened to global warming" while citing a low wind-chill reading in the Midwest. Climate scientists noted, as they have before and since, that a single cold week in one region is weather, not climate, and that the two aren't the same measurement. The tweet stayed up.</p>
         <p class="source">Source: the tweet itself, January 2019; widely fact-checked by climate scientists and outlets at the time.</p>
-        <p class="verdict">"Confusing a cold morning with a warming planet is a mistake you can make once."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"Confusing a cold morning with a warming planet is a mistake you can make once."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex015" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -583,7 +645,7 @@
         <h2>A Word About Arnold's Ratings</h2>
         <p>At the National Prayer Breakfast, remarks turned to Arnold Schwarzenegger's ratings on The Apprentice, which had dropped since taking over the show — "we hit some real ratings — the show that used to be 'The Apprentice.'" The room, gathered for a solemn annual tradition, wasn't quite sure whether to laugh.</p>
         <p class="source">Source: National Prayer Breakfast remarks, February 2, 2017, widely covered at the time.</p>
-        <p class="verdict">"There is a time and a place for ratings talk. This was neither."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"There is a time and a place for ratings talk. This was neither."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex016" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -594,7 +656,7 @@
         <h2>On the Record, Denied Anyway</h2>
         <p>Ahead of a state visit to the UK, a recorded remark critical of Meghan Markle surfaced from an interview given the year before. The recording was denied as fake shortly after — despite audio of it airing publicly at the time it was originally recorded. The outlet that ran the original interview stood by its tape.</p>
         <p class="source">Source: The Sun interview audio, published June 2019, and subsequent denial the same week.</p>
-        <p class="verdict">"You can deny a lot of things. A tape that already aired isn't one of them."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"You can deny a lot of things. A tape that already aired isn't one of them."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex017" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
@@ -605,11 +667,985 @@
         <h2>The Continental Army Takes the Airports</h2>
         <p>During a Fourth of July speech, the Continental Army was described as having "took over the airports" during the Revolutionary War — a war that predates powered flight by more than a century. Heavy rain reportedly caused prompter trouble that evening, which likely explains more than any theory involving time travel.</p>
         <p class="source">Source: "Salute to America" address, July 4, 2019, widely reported at the time.</p>
-        <p class="verdict">"An honest mistake, and also somehow the most 18th-century thing to ever mention an airport."<span class="verdict-label">— curator's take (swap this for your own line)</span></p>
+        <p class="verdict">"An honest mistake, and also somehow the most 18th-century thing to ever mention an airport."<span class="verdict-label">— curator's take</span></p>
         <button class="vote-btn" data-id="ex018" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
       </article>
 
+      <article class="exhibit" data-id="ex019"
+        data-topic="Public Health" data-year="2017"
+        data-country="United States"
+        data-claimtype="Unexplained statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 019</span><span class="exhibit-date">Feb 2017</span></div>
+        <h2>Nobody Knew Health Care Was Complicated</h2>
+        <p>At a White House meeting with governors, Trump discussed Republican efforts to replace the Affordable Care Act and observed that health care was an unusually difficult policy area. "Nobody knew that healthcare could be so complicated," he said. The Affordable Care Act had been enacted after roughly a year of congressional debate and years of earlier policy arguments.</p>
+        <p class="source">Source: Reuters video / National Governors Association meeting, February 27, 2017.</p>
+        <p class="verdict">"The mystery of American health policy was finally uncovered."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex019" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex020"
+        data-topic="Media & Communications" data-year="2017"
+        data-country="United States"
+        data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 020</span><span class="exhibit-date">May 2017</span></div>
+        <h2>The Comey Tapes</h2>
+        <p>Three days after firing FBI Director James Comey, Trump warned on Twitter that Comey had better hope there were no "tapes" of their conversations before speaking to the press. Asked whether recordings existed, the White House declined to say. Trump acknowledged the following month that he had not made and did not possess such recordings.</p>
+        <p class="source">Source: Reuters / White House press briefing, May 12, 2017; Trump statement, June 22, 2017.</p>
+        <p class="verdict">"A presidential cliffhanger cancelled after one season."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex020" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex021"
+        data-topic="Personal Conduct" data-year="2017"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 021</span><span class="exhibit-date">Jun 2017</span></div>
+        <h2>The Facelift Bulletin</h2>
+        <p>Trump used his presidential Twitter account to attack MSNBC host Mika Brzezinski after criticism on Morning Joe. He called her "low I.Q. Crazy Mika" and claimed that during an earlier visit to Mar-a-Lago she had been "bleeding badly from a face-lift." The tweets drew criticism from members of both parties.</p>
+        <p class="source">Source: The Washington Post, June 29, 2017.</p>
+        <p class="verdict">"Another quiet morning at the executive branch."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex021" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex022"
+        data-topic="Media & Communications" data-year="2017"
+        data-country="United States"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 022</span><span class="exhibit-date">Feb 2017</span></div>
+        <h2>Enemies of the People</h2>
+        <p>One month into his presidency, Trump identified several major American news organisations on Twitter and called them "the enemy of the American People." The list included The New York Times, NBC, ABC, CBS and CNN. The phrase subsequently became a recurring feature of his attacks on critical news coverage.</p>
+        <p class="source">Source: Reuters, February 17, 2017.</p>
+        <p class="verdict">"The traditional presidential media strategy, with one small adjustment."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex022" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex023"
+        data-topic="Government & Military" data-year="2017"
+        data-country="United States"
+        data-claimtype="Policy by social media">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 023</span><span class="exhibit-date">Jul 2017</span></div>
+        <h2>Personnel Policy, Three Tweets</h2>
+        <p>Trump announced on Twitter that the United States government would no longer accept or allow transgender people to serve in the military "in any capacity." The announcement arrived before the Pentagon had received detailed implementation guidance. Defense officials initially referred questions back to the White House while the policy was worked out.</p>
+        <p class="source">Source: Reuters, July 26, 2017.</p>
+        <p class="verdict">"The Pentagon discovered the policy at roughly internet speed."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex023" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex024"
+        data-topic="Personal Conduct" data-year="2017"
+        data-state="Virginia" data-city="Charlottesville" data-country="United States"
+        data-claimtype="Insensitive gesture">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 024</span><span class="exhibit-date">Aug 2017</span></div>
+        <h2>Very Fine People</h2>
+        <p>After the deadly violence surrounding the Unite the Right rally in Charlottesville, Trump held a news conference in which he said there had been "very fine people, on both sides." During the same appearance he explicitly said he was not referring to neo-Nazis and white nationalists, whom he said should be condemned totally. His decision to assign blame to multiple sides nonetheless became the central controversy of the event.</p>
+        <p class="source">Source: White House news conference / ABC News, August 15 and August 23, 2017.</p>
+        <p class="verdict">"Context included. Controversy remains fully operational."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex024" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex025"
+        data-topic="Government & Justice" data-year="2017"
+        data-state="Arizona" data-country="United States"
+        data-claimtype="Opportunistic timing">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 025</span><span class="exhibit-date">Aug 2017</span></div>
+        <h2>Friday Night Pardon</h2>
+        <p>Trump pardoned former Arizona sheriff Joe Arpaio after Arpaio was convicted of criminal contempt for defying a court order in a racial-profiling case. The White House announced the pardon on a Friday evening as Hurricane Harvey approached the Texas coast. Trump later said he assumed the timing would attract higher television ratings because of the storm coverage.</p>
+        <p class="source">Source: Reuters, August 25 and August 28, 2017.</p>
+        <p class="verdict">"Even clemency apparently has a programming schedule."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex025" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex026"
+        data-topic="Personal Conduct" data-year="2017"
+        data-state="Alabama" data-country="United States"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 026</span><span class="exhibit-date">Sep 2017</span></div>
+        <h2>Get That Son of a Bitch Off the Field</h2>
+        <p>At an Alabama rally, Trump urged NFL owners to fire players who knelt during the national anthem to protest racial injustice. He asked whether owners would remove "that son of a bitch" from the field. His comments prompted a large increase in demonstrations by NFL players and teams that weekend.</p>
+        <p class="source">Source: Reuters, September 23, 2017.</p>
+        <p class="verdict">"Sports administration briefly transferred to the presidency."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex026" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex027"
+        data-topic="Foreign Policy" data-year="2017"
+        data-country="United States"
+        data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 027</span><span class="exhibit-date">Oct 2017</span></div>
+        <h2>The Calm Before Which Storm?</h2>
+        <p>After meeting senior military leaders to discuss Iran and North Korea, Trump posed for photographs with the group at the White House. He described the scene as "the calm before the storm." Asked by reporters what storm he meant, he replied: "You'll find out."</p>
+        <p class="source">Source: Reuters, October 5, 2017.</p>
+        <p class="verdict">"National-security policy, now with teaser trailers."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex027" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex028"
+        data-topic="Personal Conduct" data-year="2017"
+        data-country="United States"
+        data-claimtype="Insensitive gesture">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 028</span><span class="exhibit-date">Nov 2017</span></div>
+        <h2>Pocahontas at the Navajo Ceremony</h2>
+        <p>Trump hosted Navajo Code Talkers at the White House to honour their military service during the Second World War. During the ceremony he revived his "Pocahontas" nickname for Senator Elizabeth Warren while the veterans stood beside him. Navajo Nation officials said the term should not be used as a political insult.</p>
+        <p class="source">Source: Associated Press, November 27, 2017.</p>
+        <p class="verdict">"The tribute acquired an entirely unrelated subplot."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex028" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex029"
+        data-topic="Foreign Policy" data-year="2017"
+        data-country="Vietnam"
+        data-adversary="Russia" data-leader="Vladimir Putin"
+        data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 029</span><span class="exhibit-date">Nov 2017</span></div>
+        <h2>Putin Says He Didn't</h2>
+        <p>While travelling in Asia, Trump said Vladimir Putin had repeatedly denied Russian election interference and appeared to contrast Putin's assurances with the investigations in Washington. He later clarified that he accepted the conclusions of U.S. intelligence agencies regarding Russian interference. Putin's personal sincerity, Trump said, was a separate question.</p>
+        <p class="source">Source: Reuters, November 11, 2017.</p>
+        <p class="verdict">"Two intelligence assessments entered; one clarification emerged."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex029" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex030"
+        data-topic="Government & Justice" data-year="2017"
+        data-country="United States"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 030</span><span class="exhibit-date">Dec 2017</span></div>
+        <h2>The Absolute Right Department</h2>
+        <p>In a New York Times interview, Trump discussed the Justice Department and said: "I have absolute right to do what I want." The president does possess broad executive authority over the department, but that authority is constrained by the Constitution, statutes and other legal obligations. The comment came amid the special counsel investigation into Russian election interference.</p>
+        <p class="source">Source: The New York Times interview, December 28, 2017.</p>
+        <p class="verdict">"Article II, now available in the unlimited edition."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex030" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex031"
+        data-topic="Personal Conduct" data-year="2018"
+        data-country="United States"
+        data-claimtype="Self-praise">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 031</span><span class="exhibit-date">Jan 2018</span></div>
+        <h2>Very Stable Genius</h2>
+        <p>Responding to questions about his mental fitness following publication of Michael Wolff's book Fire and Fury, Trump issued a series of tweets describing his own qualities. He wrote that his two greatest assets had been "mental stability" and being "really smart." The sequence concluded with his description of himself as "a very stable genius."</p>
+        <p class="source">Source: Reuters, January 6, 2018.</p>
+        <p class="verdict">"Independent assessment was deemed unnecessary."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex031" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex032"
+        data-topic="Immigration" data-year="2018"
+        data-country="United States" data-nationality="Haitian|African"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 032</span><span class="exhibit-date">Jan 2018</span></div>
+        <h2>The Countries Meeting</h2>
+        <p>During a closed White House immigration meeting, Trump questioned accepting immigrants from Haiti and African nations and referred to some as "shithole countries," according to two sources who spoke to Reuters. Senator Dick Durbin, who attended, subsequently said Trump had used the term. Trump disputed aspects of the accounts and said the language attributed to him was not the language he had used.</p>
+        <p class="source">Source: Reuters, January 11–12, 2018.</p>
+        <p class="verdict">"Diplomatic vocabulary underwent an unscheduled stress test."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex032" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex033"
+        data-topic="Economy & Trade" data-year="2018"
+        data-country="United States"
+        data-claimtype="Disputed claim" data-market="Steel|Aluminium" data-tradepublic="Yes">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 033</span><span class="exhibit-date">Mar 2018</span></div>
+        <h2>Easy to Win</h2>
+        <p>After announcing plans for tariffs on imported steel and aluminium, Trump responded to fears of retaliation with a confident assessment. "Trade wars are good, and easy to win," he wrote on Twitter. Global markets had already fallen on concern that major U.S. trading partners would retaliate.</p>
+        <p class="source">Source: Reuters, March 2, 2018.</p>
+        <p class="verdict">"International economics reduced to the tutorial setting."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex033" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex034"
+        data-topic="Personal Conduct" data-year="2018"
+        data-state="Florida" data-country="United States"
+        data-claimtype="Self-praise">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 034</span><span class="exhibit-date">Feb 2018</span></div>
+        <h2>Unarmed, Into the School</h2>
+        <p>Discussing the police response to the Parkland school shooting, Trump criticised an armed sheriff's deputy who had remained outside the building. Trump then said he believed he personally would have entered the school even if he had not been carrying a weapon. He acknowledged that nobody could know for certain how they would react in such circumstances.</p>
+        <p class="source">Source: Reuters, February 26, 2018.</p>
+        <p class="verdict">"The hypothetical Secret Service detail was not consulted."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex034" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex035"
+        data-topic="Foreign Policy" data-year="2018"
+        data-country="Syria"
+        data-claimtype="Self-praise">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 035</span><span class="exhibit-date">Apr 2018</span></div>
+        <h2>Mission Accomplished, Again</h2>
+        <p>Following U.S., British and French missile strikes against Syrian chemical-weapons facilities, Trump praised the operation on Twitter. He finished with "Mission Accomplished!" The phrase inevitably recalled the banner displayed behind President George W. Bush in 2003 during the still-young Iraq War.</p>
+        <p class="source">Source: Reuters, April 14, 2018.</p>
+        <p class="verdict">"A slogan with absolutely no historical baggage whatsoever."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex035" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex036"
+        data-topic="Foreign Policy" data-year="2018"
+        data-country="Canada" data-leader="Justin Trudeau"
+        data-claimtype="Inflammatory rhetoric" data-tradepublic="Yes">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 036</span><span class="exhibit-date">Jun 2018</span></div>
+        <h2>Leaving the G7, Tweeting at Canada</h2>
+        <p>After departing the G7 summit in Quebec, Trump withdrew U.S. support for the meeting's joint communiqué. From Air Force One he accused Canadian Prime Minister Justin Trudeau of making false statements and called him "very dishonest &amp; weak." The comments followed a summit dominated by disputes over U.S. tariffs.</p>
+        <p class="source">Source: Reuters, June 9, 2018.</p>
+        <p class="verdict">"The communiqué lasted almost as far as the airport."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex036" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex037"
+        data-topic="Foreign Policy" data-year="2018"
+        data-country="Finland" data-adversary="Russia" data-leader="Vladimir Putin"
+        data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 037</span><span class="exhibit-date">Jul 2018</span></div>
+        <h2>Helsinki Grammar Emergency</h2>
+        <p>Standing beside Vladimir Putin in Helsinki, Trump was asked whether he believed Russia had interfered in the 2016 election. He said he saw no reason why Russia "would be" responsible, appearing to contradict U.S. intelligence agencies. The next day he said he had misspoken and intended to say "wouldn't."</p>
+        <p class="source">Source: Reuters, July 16–17, 2018.</p>
+        <p class="verdict">"One missing contraction required an international clarification."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex037" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex038"
+        data-topic="Foreign Policy" data-year="2018"
+        data-country="Montenegro"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 038</span><span class="exhibit-date">Jul 2018</span></div>
+        <h2>Montenegro, World War III</h2>
+        <p>Asked in a television interview why Americans should defend a small NATO member such as Montenegro, Trump described Montenegrins as "very aggressive people." He suggested their aggression could result in "World War III." Montenegro, with a population of roughly 620,000 at the time, had joined NATO the previous year.</p>
+        <p class="source">Source: Reuters, July 18, 2018.</p>
+        <p class="verdict">"The Balkans received an unexpected performance review."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex038" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex039"
+        data-topic="Environment & Weather" data-year="2018"
+        data-state="Puerto Rico" data-country="United States"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 039</span><span class="exhibit-date">Sep 2018</span></div>
+        <h2>Three Thousand Didn't Die</h2>
+        <p>Puerto Rico's government adopted an estimate of 2,975 excess deaths associated with Hurricane Maria following an independent George Washington University study. Trump rejected the figure on Twitter and claimed Democrats had inflated it to make him look bad. He supplied no evidence that the researchers' estimate had been politically manipulated.</p>
+        <p class="source">Source: Reuters, September 13, 2018.</p>
+        <p class="verdict">"The mortality study encountered the presidential veto button."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex039" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex040"
+        data-topic="Environment & Weather" data-year="2018"
+        data-state="North Carolina|South Carolina" data-country="United States"
+        data-claimtype="Unexplained statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 040</span><span class="exhibit-date">Sep 2018</span></div>
+        <h2>Wet From the Standpoint of Water</h2>
+        <p>In a White House video thanking responders after Hurricane Florence, Trump described the storm as one of the wettest the country had experienced "from the standpoint of water." Florence had produced catastrophic rainfall and flooding across the Carolinas. The description was technically difficult to dispute.</p>
+        <p class="source">Source: White House video, September 18, 2018.</p>
+        <p class="verdict">"Hydrology, stripped to its essential element."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex040" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex041"
+        data-topic="Foreign Policy" data-year="2018"
+        data-country="United States" data-leader="Kim Jong Un"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 041</span><span class="exhibit-date">Sep 2018</span></div>
+        <h2>We Fell in Love</h2>
+        <p>At a West Virginia rally, Trump described the improvement in his relationship with North Korean leader Kim Jong Un after their earlier exchange of insults and threats. Referring to letters from Kim, Trump said: "we fell in love." Negotiations over North Korea's nuclear programme continued without producing denuclearisation.</p>
+        <p class="source">Source: Reuters, September 30, 2018.</p>
+        <p class="verdict">"Nuclear diplomacy entered its romantic correspondence phase."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex041" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex042"
+        data-topic="Environment & Weather" data-year="2018"
+        data-country="United States"
+        data-claimtype="Scientific falsehood">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 042</span><span class="exhibit-date">Oct 2018</span></div>
+        <h2>Natural Instinct for Science</h2>
+        <p>Asked by the Associated Press about the scientific consensus on climate change, Trump said scientists were on both sides of the question. He cited the fact that his uncle had been a professor at MIT, while noting that he had not discussed this subject with him. Trump added that he possessed "a natural instinct for science."</p>
+        <p class="source">Source: Associated Press interview, October 16, 2018; AP fact check, October 17, 2018.</p>
+        <p class="verdict">"Peer review replaced by hereditary instinct."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex042" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex043"
+        data-topic="Personal Conduct" data-year="2018"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 043</span><span class="exhibit-date">Oct 2018</span></div>
+        <h2>Horseface</h2>
+        <p>After a federal judge dismissed Stormy Daniels' defamation lawsuit against him, Trump celebrated the ruling on Twitter. He referred to Daniels as "Horseface" while saying he could pursue legal action against her. Daniels responded with an insult of her own.</p>
+        <p class="source">Source: Reuters, October 16, 2018.</p>
+        <p class="verdict">"Presidential litigation commentary maintained its customary tone."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex043" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex044"
+        data-topic="Environment & Weather" data-year="2018"
+        data-country="United States|Finland"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 044</span><span class="exhibit-date">Nov 2018</span></div>
+        <h2>Finland Rakes the Forest</h2>
+        <p>Touring wildfire damage in California, Trump said Finland prevented similar fires by spending significant time "raking and cleaning" forest floors. Finnish President Sauli Niinistö said he had discussed forest management with Trump but did not recall telling him that Finland raked its forests. Finns responded online with photographs of themselves holding garden rakes.</p>
+        <p class="source">Source: Reuters, November 18, 2018.</p>
+        <p class="verdict">"A Nordic forestry programme nobody in Finland remembered joining."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex044" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex045"
+        data-topic="Environment & Weather" data-year="2018"
+        data-country="United States"
+        data-claimtype="Scientific falsehood">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 045</span><span class="exhibit-date">Nov 2018</span></div>
+        <h2>I Don't Believe It</h2>
+        <p>The Trump administration released the congressionally mandated National Climate Assessment, produced with contributions from 13 federal agencies. The report warned that unchecked climate change could cause severe economic and environmental damage in the United States. Asked about its economic conclusions, Trump said: "I don't believe it."</p>
+        <p class="source">Source: Reuters, November 26, 2018.</p>
+        <p class="verdict">"Thirteen agencies submitted their work to the final review stage."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex045" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex046"
+        data-topic="Media & Communications" data-year="2018"
+        data-country="United States"
+        data-claimtype="Verbal Slip">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 046</span><span class="exhibit-date">Dec 2018</span></div>
+        <h2>The Smocking Gun</h2>
+        <p>Trump attacked the Russia investigation on Twitter and twice referred to the absence of a "smocking gun." The conventional phrase is "smoking gun." The tweets remained focused on alleged conflicts involving investigators rather than tobacco-control policy.</p>
+        <p class="source">Source: Donald Trump Twitter posts / Associated Press coverage, December 10, 2018.</p>
+        <p class="verdict">"The gun was smoking; the spelling was still under investigation."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex046" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex047"
+        data-topic="Personal Conduct" data-year="2019"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 047</span><span class="exhibit-date">Jan 2019</span></div>
+        <h2>Hamberders by Candlelight</h2>
+        <p>During a federal government shutdown, Trump hosted the national champion Clemson Tigers football team at the White House and paid for a spread of McDonald's, Wendy's and other fast food. The following morning he boasted on Twitter that more than 1,000 "hamberders" had been served. The tweet was later deleted and reposted with the spelling corrected.</p>
+        <p class="source">Source: Reuters, January 15, 2019; Donald Trump Twitter post, January 15, 2019.</p>
+        <p class="verdict">"State Dining Room cuisine met executive spellcheck."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex047" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex048"
+        data-topic="Government & Justice" data-year="2019"
+        data-country="United States"
+        data-claimtype="Verbal Slip">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 048</span><span class="exhibit-date">Apr 2019</span></div>
+        <h2>The Oranges of the Investigation</h2>
+        <p>Speaking to reporters about the origins of the investigation into Russian election interference, Trump repeatedly stumbled over the word "origins." At one point he referred to examining "the oranges of the investigation." He then returned to the intended word and continued his remarks.</p>
+        <p class="source">Source: White House remarks / Washington Post video, April 2, 2019.</p>
+        <p class="verdict">"The Mueller inquiry briefly entered the produce section."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex048" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex049"
+        data-topic="Media & Communications" data-year="2019"
+        data-country="United Kingdom"
+        data-leader="Charles III"
+        data-claimtype="Verbal Slip">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 049</span><span class="exhibit-date">Jun 2019</span></div>
+        <h2>Prince of Whales</h2>
+        <p>Defending his contacts with foreign leaders, Trump listed several people he had recently met, including Britain's then Prince Charles. In the tweet he referred to Charles as the "Prince of Whales." The post was deleted and replaced with one spelling Wales correctly.</p>
+        <p class="source">Source: Reuters, June 13, 2019.</p>
+        <p class="verdict">"The heir to the throne temporarily acquired an ocean portfolio."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex049" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex050"
+        data-topic="Science & Space" data-year="2019"
+        data-country="United States"
+        data-claimtype="Scientific falsehood">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 050</span><span class="exhibit-date">Jun 2019</span></div>
+        <h2>The Moon, Part of Mars</h2>
+        <p>Trump criticised NASA on Twitter for discussing a return to the Moon, despite his administration's own plan for astronauts to return there. He urged the agency to focus on larger objectives including "Mars (of which the Moon is a part)." The Moon is Earth's natural satellite and is not part of Mars.</p>
+        <p class="source">Source: Donald Trump Twitter post / news-agency coverage, June 7–8, 2019.</p>
+        <p class="verdict">"The solar system received a small administrative restructuring."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex050" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex051"
+        data-topic="Public Health" data-year="2019"
+        data-country="United States"
+        data-claimtype="Unexplained statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 051</span><span class="exhibit-date">Jul 2019</span></div>
+        <h2>The Kidney's Special Place in the Heart</h2>
+        <p>Trump signed an executive order intended to improve kidney care and expand access to transplants. During his remarks he said: "The kidney has a very special place in the heart." Kidneys are located in the abdomen, although concern for kidney patients may of course be metaphorically heartfelt.</p>
+        <p class="source">Source: White House remarks / Associated Press coverage, July 10, 2019.</p>
+        <p class="verdict">"Anatomy yielded briefly to sentiment."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex051" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex052"
+        data-topic="Government & Justice" data-year="2019"
+        data-country="United States"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 052</span><span class="exhibit-date">Jul 2019</span></div>
+        <h2>Article II: Whatever I Want</h2>
+        <p>Speaking to young conservatives about the Mueller investigation, Trump discussed the constitutional powers of the presidency. "Then I have an Article II," he said, adding that it gave him "the right to do whatever I want as president." Article II grants substantial executive powers but does not give a president unlimited authority.</p>
+        <p class="source">Source: Turning Point USA speech / The Washington Post, July 23, 2019.</p>
+        <p class="verdict">"The Constitution's lesser-known unlimited-data plan."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex052" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex053"
+        data-topic="Foreign Policy" data-year="2019"
+        data-country="Greenland|Denmark"
+        data-leader="Mette Frederiksen"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 053</span><span class="exhibit-date">Aug 2019</span></div>
+        <h2>Greenland: Not for Sale</h2>
+        <p>Trump discussed the possibility of the United States purchasing Greenland, an autonomous territory within the Kingdom of Denmark. Danish Prime Minister Mette Frederiksen called the idea of selling Greenland absurd. Trump then postponed a planned visit to Denmark and complained that Frederiksen's description had been "nasty."</p>
+        <p class="source">Source: Reuters, August 16–21, 2019.</p>
+        <p class="verdict">"The property enquiry did not proceed to viewing."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex053" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex054"
+        data-topic="Economy & Trade" data-year="2019"
+        data-country="United States|China"
+        data-claimtype="Self-praise" data-tradepublic="Yes">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 054</span><span class="exhibit-date">Aug 2019</span></div>
+        <h2>The Chosen One</h2>
+        <p>Speaking to reporters during the U.S.-China trade dispute, Trump argued that previous presidents had failed to confront China's trade practices. He looked upward and said: "I am the chosen one." He later said he had been joking.</p>
+        <p class="source">Source: Reuters, August 21, 2019.</p>
+        <p class="verdict">"Trade negotiations acquired a brief theological dimension."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex054" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex055"
+        data-topic="Environment & Energy" data-year="2019"
+        data-country="United States"
+        data-claimtype="Unexplained statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 055</span><span class="exhibit-date">Sep 2019</span></div>
+        <h2>The Lightbulbs Make Me Orange</h2>
+        <p>While discussing his administration's rollback of energy-efficiency rules for lightbulbs, Trump offered a personal objection to newer bulbs. "The light's no good," he said, before adding that under them "I always look orange." Lighting specialists told reporters that many factors influence skin colour on camera.</p>
+        <p class="source">Source: Reuters video / House Republican retreat, September 12–13, 2019.</p>
+        <p class="verdict">"Energy policy finally identified the real affected constituency."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex055" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex056"
+        data-topic="Foreign Policy" data-year="2019"
+        data-country="United States|China"
+        data-family="Biden" data-leader="Xi Jinping"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 056</span><span class="exhibit-date">Oct 2019</span></div>
+        <h2>China, Please Investigate</h2>
+        <p>With an impeachment inquiry already examining his request that Ukraine investigate Joe and Hunter Biden, Trump stood outside the White House and publicly suggested another country do the same. "China should start an investigation into the Bidens," he told reporters. He said he had not asked Xi Jinping to do so but that it was something the administration could consider.</p>
+        <p class="source">Source: Reuters / White House press remarks, October 3, 2019.</p>
+        <p class="verdict">"The private controversy was helpfully converted into a public demonstration."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex056" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex057"
+        data-topic="Media & Communications" data-year="2019"
+        data-country="United States"
+        data-claimtype="Altered evidence">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 057</span><span class="exhibit-date">Oct 2019</span></div>
+        <h2>Medal of Honor, Now With Dog</h2>
+        <p><em>[NEEDS SOURCE VERIFICATION before publishing — see note]</em> Trump tweeted an altered image showing himself apparently placing a medal around Conan, the military dog involved in the operation against Islamic State leader Abu Bakr al-Baghdadi. The original photograph is reported to have shown Trump at an earlier medal ceremony, with the recipient's face and medal replaced by the dog and a paw-print design.</p>
+        <p class="source">Source: reported by The Washington Post, October 30–31, 2019 — confirm exact original photo/recipient before publishing.</p>
+        <p class="verdict">"The presidential feed discovered Photoshop's ceremonial applications."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex057" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex058"
+        data-topic="Environment & Energy" data-year="2019"
+        data-country="United States"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 058</span><span class="exhibit-date">Dec 2019</span></div>
+        <h2>Fifteen Flushes</h2>
+        <p>At a White House small-business event, Trump said water-efficiency standards were causing problems with sinks, showers and toilets. He said some people were "flushing toilets 10 times, 15 times" instead of once. He announced that the Environmental Protection Agency was examining the issue at his suggestion.</p>
+        <p class="source">Source: Reuters video, December 6, 2019.</p>
+        <p class="verdict">"The administration identified the nation's number-two priority."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex058" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex059"
+        data-topic="History & Facts" data-year="2020"
+        data-state="Missouri|Kansas" data-country="United States"
+        data-claimtype="Historical inaccuracy">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 059</span><span class="exhibit-date">Feb 2020</span></div>
+        <h2>The Great State of Kansas City</h2>
+        <p>After the Kansas City Chiefs won Super Bowl LIV, Trump congratulated the team for representing "the Great State of Kansas." The Chiefs play at Arrowhead Stadium in Kansas City, Missouri. Trump deleted the tweet and posted a corrected version congratulating Missouri.</p>
+        <p class="source">Source: The Washington Post, February 3, 2020.</p>
+        <p class="verdict">"The border moved back before the victory parade."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex059" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex060"
+        data-topic="Public Health" data-year="2020"
+        data-country="Switzerland|United States"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 060</span><span class="exhibit-date">Jan 2020</span></div>
+        <h2>Totally Under Control</h2>
+        <p>Asked about the newly identified coronavirus during an interview at the World Economic Forum in Davos, Trump said the United States had it "totally under control." At that point one U.S. case had been confirmed. Community spread and a nationwide public-health emergency followed in the subsequent weeks.</p>
+        <p class="source">Source: CNBC interview, January 22, 2020.</p>
+        <p class="verdict">"A forecast with an unusually short shelf life."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex060" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex061"
+        data-topic="Public Health" data-year="2020"
+        data-country="United States"
+        data-claimtype="Medical misinformation">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 061</span><span class="exhibit-date">Feb 2020</span></div>
+        <h2>Fifteen, Soon to Be Zero</h2>
+        <p>At a White House coronavirus briefing, Trump said the number of confirmed U.S. cases had fallen within the range of about 15 and predicted that "the 15 within a couple of days is going to be down to close to zero." The number instead rose rapidly as previously undetected transmission became apparent across the country.</p>
+        <p class="source">Source: White House coronavirus briefing, February 26, 2020.</p>
+        <p class="verdict">"The curve declined beautifully, provided nobody looked at the curve."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex061" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex062"
+        data-topic="Public Health" data-year="2020"
+        data-country="United States"
+        data-claimtype="Ignored safety guidance">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 062</span><span class="exhibit-date">Mar 2020</span></div>
+        <h2>I Don't Take Responsibility at All</h2>
+        <p>At a Rose Garden news conference, Trump was asked whether he accepted responsibility for delays and problems in U.S. coronavirus testing. "I don't take responsibility at all," he replied. His administration had declared a public-health emergency six weeks earlier and federal agencies were centrally involved in the testing response.</p>
+        <p class="source">Source: White House news conference / The Washington Post video, March 13, 2020.</p>
+        <p class="verdict">"The buck stopped for directions and continued travelling."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex062" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex063"
+        data-topic="Public Health" data-year="2020"
+        data-country="United States"
+        data-claimtype="Medical misinformation">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 063</span><span class="exhibit-date">Apr 2020</span></div>
+        <h2>What Do You Have to Lose?</h2>
+        <p>Trump repeatedly promoted the antimalarial drug hydroxychloroquine as a possible treatment for COVID-19 before clinical evidence had established that it worked. At an April briefing he urged patients to consider it, asking: "What do you have to lose?" Subsequent large clinical trials found no meaningful benefit for hospitalised COVID-19 patients.</p>
+        <p class="source">Source: Reuters / White House coronavirus briefing, April 4, 2020.</p>
+        <p class="verdict">"The clinical-trial phase was briefly treated as optional."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex063" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex064"
+        data-topic="Public Health" data-year="2020"
+        data-state="Michigan|Minnesota|Virginia" data-country="United States"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 064</span><span class="exhibit-date">Apr 2020</span></div>
+        <h2>LIBERATE</h2>
+        <p>As governors imposed restrictions intended to slow coronavirus transmission, Trump issued a series of tweets reading "LIBERATE MICHIGAN!", "LIBERATE MINNESOTA!" and "LIBERATE VIRGINIA." The posts came amid demonstrations against stay-at-home measures in several states. The public-health restrictions had largely been imposed by state governments rather than Washington.</p>
+        <p class="source">Source: Reuters, April 17, 2020.</p>
+        <p class="verdict">"Federalism became significantly more capitalised."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex064" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex065"
+        data-topic="Personal Conduct" data-year="2020"
+        data-state="Minnesota" data-city="Minneapolis" data-country="United States"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 065</span><span class="exhibit-date">May 2020</span></div>
+        <h2>When the Looting Starts</h2>
+        <p>During unrest in Minneapolis following the killing of George Floyd, Trump posted a message calling rioters "THUGS" and warning that "when the looting starts, the shooting starts." Twitter placed a warning on the post for violating its rule against glorifying violence while leaving it accessible in the public interest. Trump later said he had meant that looting leads to shootings rather than that he was ordering people shot.</p>
+        <p class="source">Source: Reuters, May 29, 2020.</p>
+        <p class="verdict">"The clarification arrived after the slogan."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex065" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex066"
+        data-topic="Public Health" data-year="2020"
+        data-state="Oklahoma" data-city="Tulsa" data-country="United States"
+        data-claimtype="Ignored safety guidance">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 066</span><span class="exhibit-date">Jun 2020</span></div>
+        <h2>Slow the Testing Down</h2>
+        <p>At his Tulsa campaign rally, Trump complained that extensive coronavirus testing was identifying large numbers of cases. "I said to my people, slow the testing down, please," he told the crowd. White House officials initially said the remark was a joke; Trump subsequently said he did not kid about testing.</p>
+        <p class="source">Source: Trump Tulsa rally / Axios, June 20–23, 2020.</p>
+        <p class="verdict">"One way to improve the dashboard is apparently to unplug the dashboard."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex066" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex067"
+        data-topic="Public Health" data-year="2020"
+        data-country="United States"
+        data-claimtype="Medical misinformation">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 067</span><span class="exhibit-date">Jul 2020</span></div>
+        <h2>Ninety-Nine Percent Harmless</h2>
+        <p>During a Fourth of July speech, Trump said coronavirus testing had shown that "99 percent" of cases were "totally harmless." At the time, substantial numbers of confirmed patients required hospitalisation and more than 130,000 Americans had died. Public-health experts said the claim was false.</p>
+        <p class="source">Source: White House Independence Day remarks, July 4, 2020; FactCheck.org, July 6, 2020.</p>
+        <p class="verdict">"The missing one percent was doing an extraordinary amount of work."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex067" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex068"
+        data-topic="History & Facts" data-year="2020"
+        data-country="United States"
+        data-claimtype="Historical inaccuracy">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 068</span><span class="exhibit-date">Aug 2020</span></div>
+        <h2>The 1917 Pandemic Ended World War II</h2>
+        <p>At an August press briefing, Trump compared COVID-19 with the influenza pandemic commonly dated to 1918. He referred instead to 1917 and said the earlier pandemic "probably ended the Second World War" because soldiers were sick. The influenza pandemic occurred near the end of the First World War; the Second World War ended in 1945.</p>
+        <p class="source">Source: White House press briefing transcript, August 10, 2020.</p>
+        <p class="verdict">"Two world wars and one pandemic entered the historical blender."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex068" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex069"
+        data-topic="History & Facts" data-year="2025"
+        data-country="United States|Mexico"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 069</span><span class="exhibit-date">Jan 2025</span></div>
+        <h2>The Gulf of America</h2>
+        <p>Within days of returning to office, Trump ordered the U.S. government to rename the Gulf of Mexico the Gulf of America. Mexico said the centuries-old Gulf of Mexico name remained internationally recognised. The Interior Department nevertheless made the new terminology official for U.S. federal agencies.</p>
+        <p class="source">Source: Reuters, January 24, 2025.</p>
+        <p class="verdict">"Geography received an executive rebrand."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex069" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex070"
+        data-topic="History & Facts" data-year="2025"
+        data-state="Alaska" data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 070</span><span class="exhibit-date">Jan 2025</span></div>
+        <h2>Denali Becomes McKinley Again</h2>
+        <p>The same order directed the Interior Department to change North America's highest mountain from Denali back to Mount McKinley. Alaska had officially used Denali for decades, reflecting the Indigenous Koyukon name for the mountain. Trump said President William McKinley deserved the honour because of his record on tariffs and expansion.</p>
+        <p class="source">Source: Reuters, January 24, 2025.</p>
+        <p class="verdict">"One executive order, two updates to the atlas."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex070" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex071"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="United States|Canada"
+        data-leader="Justin Trudeau" data-tradepublic="Yes"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 071</span><span class="exhibit-date">Jan 2025</span></div>
+        <h2>Canada, the 51st State</h2>
+        <p>Trump repeatedly proposed that Canada become the 51st U.S. state and referred to Canadian Prime Minister Justin Trudeau as a governor. Asked whether he would use military force to acquire Canada, Trump said no, but said he could use "economic force." Trudeau responded that there was no chance Canada would become part of the United States.</p>
+        <p class="source">Source: Reuters, January 7, 2025.</p>
+        <p class="verdict">"The world's longest undefended border entered a merger discussion."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex071" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex072"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="Greenland|Denmark"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 072</span><span class="exhibit-date">Mar 2025</span></div>
+        <h2>Greenland, One Way or the Other</h2>
+        <p>Addressing Congress, Trump renewed his proposal for the United States to acquire Greenland, an autonomous territory of Denmark. He told Greenlanders the United States would make them prosperous and secure before predicting: "I think we're going to get it." He added that this would happen "one way or the other."</p>
+        <p class="source">Source: Reuters, March 5, 2025.</p>
+        <p class="verdict">"The right to self-determination came with an unusually confident forecast."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex072" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex073"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="Gaza|United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 073</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>The Riviera of the Middle East</h2>
+        <p>Trump proposed that the United States take control of the Gaza Strip after the war while Palestinians were resettled elsewhere. He said Gaza could then be redeveloped into what he described as the "Riviera of the Middle East." Governments across the region rejected the idea of permanently displacing Gaza's Palestinian population.</p>
+        <p class="source">Source: Reuters, February 4–6, 2025.</p>
+        <p class="verdict">"Middle East diplomacy briefly became a property-development presentation."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex073" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex074"
+        data-topic="Media & Communications" data-year="2025"
+        data-country="Gaza"
+        data-claimtype="Altered evidence">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 074</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>Trump Gaza: The AI Resort</h2>
+        <p>Trump posted an AI-generated video depicting a fantastically redeveloped Gaza with skyscrapers, luxury resorts, a giant golden Trump statue and bearded dancers. The video also showed Trump and Benjamin Netanyahu relaxing beside a swimming pool. It appeared weeks after Trump had proposed U.S. control and redevelopment of the territory.</p>
+        <p class="source">Source: Reuters, February 26, 2025.</p>
+        <p class="verdict">"The peace plan acquired a promotional video before it acquired consent."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex074" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex075"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="Ukraine|Russia"
+        data-adversary="Russia" data-leader="Volodymyr Zelenskyy|Vladimir Putin"
+        data-claimtype="Historical inaccuracy">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 075</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>Ukraine Started It</h2>
+        <p>Speaking after U.S.-Russia talks that did not include Ukraine, Trump told reporters that Ukraine "should have never started" the war. Russia launched its full-scale invasion of Ukraine in February 2022. Trump also argued that Ukraine could previously have reached a deal by surrendering territory.</p>
+        <p class="source">Source: BBC News video, February 18, 2025; PolitiFact, February 19, 2025.</p>
+        <p class="verdict">"Three years of documented invasion received a new opening scene."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex075" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex076"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="Ukraine"
+        data-leader="Volodymyr Zelenskyy"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 076</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>The Dictator Without Elections</h2>
+        <p>Trump called Ukrainian President Volodymyr Zelenskyy a "dictator without elections." Ukraine had postponed its scheduled presidential election while operating under martial law during Russia's invasion, as provided for under Ukrainian law. The remark followed Zelenskyy's criticism of Trump's statements about the war.</p>
+        <p class="source">Source: Reuters, February 20, 2025.</p>
+        <p class="verdict">"The wartime ally relationship continued smoothly."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex076" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex077"
+        data-topic="Government & Justice" data-year="2025"
+        data-country="United States"
+        data-claimtype="Inflammatory rhetoric">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 077</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>If It Saves the Country, It's Legal</h2>
+        <p>As federal judges were blocking several administration actions, Trump posted a line attributed to Napoleon Bonaparte: "He who saves his Country does not violate any Law." The White House did not offer further explanation of the statement. The post came amid disputes over the constitutional limits of presidential authority.</p>
+        <p class="source">Source: Reuters, February 15–16, 2025.</p>
+        <p class="verdict">"The Constitution received a Napoleon-shaped footnote."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex077" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex078"
+        data-topic="Media & Communications" data-year="2025"
+        data-state="New York" data-country="United States"
+        data-claimtype="Self-praise">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 078</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>Long Live the King</h2>
+        <p>After his administration moved to halt New York City's congestion-pricing programme, Trump celebrated on social media with the words "LONG LIVE THE KING!" The official White House account amplified the message with an AI-generated fake magazine cover depicting Trump wearing a crown. New York immediately challenged the administration's action in court.</p>
+        <p class="source">Source: Associated Press, February 19, 2025.</p>
+        <p class="verdict">"Nothing says constitutional republic like the official crown graphic."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex078" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex079"
+        data-topic="Environment & Energy" data-year="2025"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 079</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>Make Plastic Straws Great Again</h2>
+        <p>Trump signed an executive order reversing federal efforts to reduce single-use plastic straws. Explaining the measure in the Oval Office, he said paper straws "don't work." The order directed federal agencies away from purchasing paper straws and toward plastic alternatives.</p>
+        <p class="source">Source: Reuters, February 10, 2025.</p>
+        <p class="verdict">"The republic's drinking-tube emergency received presidential attention."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex079" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex080"
+        data-topic="Economy & Trade" data-year="2025"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 080</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>Death to the Penny</h2>
+        <p>Trump instructed the Treasury Department to stop producing the one-cent coin, arguing that minting pennies cost more than their face value. Treasury subsequently placed its final order for penny blanks. The cost of manufacturing each penny had risen to more than three cents.</p>
+        <p class="source">Source: Reuters, February 11 and May 22, 2025.</p>
+        <p class="verdict">"After 232 years, the penny encountered DOGE."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex080" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex081"
+        data-topic="Immigration" data-year="2025"
+        data-country="United States"
+        data-claimtype="Off-key remark" data-market="Immigration">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 081</span><span class="exhibit-date">Feb 2025</span></div>
+        <h2>The Five-Million-Dollar Gold Card</h2>
+        <p>Trump announced plans for a new immigration route called a "gold card," priced at approximately $5 million. He said it would offer green-card privileges and a route to U.S. citizenship, and suggested companies could purchase them for valuable employees. Asked whether Russian oligarchs might qualify, Trump said some potentially could.</p>
+        <p class="source">Source: Reuters, February 25–26, 2025.</p>
+        <p class="verdict">"Immigration reform discovered the premium subscription tier."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex081" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex082"
+        data-topic="Personal Conduct" data-year="2025"
+        data-country="United States"
+        data-leader="Elon Musk"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 082</span><span class="exhibit-date">Mar 2025</span></div>
+        <h2>The White House Tesla Showroom</h2>
+        <p>With Tesla facing declining sales and protests over Elon Musk's political role, several Tesla vehicles were displayed on the White House South Lawn. Trump inspected the cars beside Musk and announced that he would buy one. Official White House photographs subsequently described the event as President Trump purchasing a Tesla.</p>
+        <p class="source">Source: White House photo gallery, March 11, 2025.</p>
+        <p class="verdict">"The South Lawn briefly developed a sales department."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex082" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex083"
+        data-topic="Government & Justice" data-year="2025"
+        data-country="United States"
+        data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 083</span><span class="exhibit-date">Mar 2025</span></div>
+        <h2>No, I'm Not Joking About a Third Term</h2>
+        <p>In an NBC News interview, Trump was asked about suggestions that he might seek a third presidential term. "No, I'm not joking," he replied, adding that there were methods by which it might be done. The 22nd Amendment prohibits anyone from being elected president more than twice.</p>
+        <p class="source">Source: Reuters / NBC News interview, March 30, 2025.</p>
+        <p class="verdict">"The constitutional term limit entered the brainstorming phase."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex083" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex084"
+        data-topic="Economy & Trade" data-year="2025"
+        data-country="Heard Island and McDonald Islands"
+        data-claimtype="Unexplained statement" data-tradepublic="Yes">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 084</span><span class="exhibit-date">Apr 2025</span></div>
+        <h2>Tariffs on the Penguins</h2>
+        <p>Trump's "Liberation Day" tariff list imposed a 10 percent tariff on imports from Australia's Heard Island and McDonald Islands. The remote Antarctic territory has no permanent human population and is primarily inhabited by wildlife including penguins and seals. Another Australian territory, Norfolk Island, was assigned a substantially higher tariff than Australia itself.</p>
+        <p class="source">Source: Reuters, April 3, 2025.</p>
+        <p class="verdict">"At last, the penguin trade deficit was confronted."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex084" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex085"
+        data-topic="Environment & Energy" data-year="2025"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 085</span><span class="exhibit-date">Apr 2025</span></div>
+        <h2>Make America's Showers Great Again</h2>
+        <p>Trump signed an executive order aimed at reversing federal limits affecting shower-head water flow. The White House promoted the move under the phrase "Make America's Showers Great Again." Trump had complained for years that water-saving rules made washing his hair unnecessarily difficult.</p>
+        <p class="source">Source: Reuters, April 9–14, 2025.</p>
+        <p class="verdict">"Executive authority finally reached the shower head."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex085" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex086"
+        data-topic="Personal Conduct" data-year="2025"
+        data-country="Vatican City|United States"
+        data-claimtype="Self-praise">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 086</span><span class="exhibit-date">Apr 2025</span></div>
+        <h2>I'd Like to Be Pope</h2>
+        <p>Days after attending Pope Francis' funeral, Trump was asked whom he would like to see selected as the next pope. "I'd like to be pope," he replied, calling that his number-one choice before saying he actually had no preference. The decision belonged to the College of Cardinals.</p>
+        <p class="source">Source: Reuters, April 29, 2025.</p>
+        <p class="verdict">"The shortlist expanded unexpectedly."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex086" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex087"
+        data-topic="Media & Communications" data-year="2025"
+        data-country="Vatican City|United States"
+        data-claimtype="Altered evidence">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 087</span><span class="exhibit-date">May 2025</span></div>
+        <h2>Pope Donald I</h2>
+        <p>Several days after joking that he would like to become pope, Trump posted an AI-generated image depicting himself in papal robes and mitre. The official White House account also circulated the image. It appeared while Catholic cardinals were preparing for the conclave to elect Pope Francis' successor.</p>
+        <p class="source">Source: Associated Press, May 3, 2025.</p>
+        <p class="verdict">"The campaign for a position he could not stand for progressed to artwork."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex087" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex088"
+        data-topic="Media & Communications" data-year="2025"
+        data-country="United States"
+        data-claimtype="Altered evidence">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 088</span><span class="exhibit-date">May 2025</span></div>
+        <h2>Darth Trump</h2>
+        <p>For Star Wars Day, the official White House account posted an AI-generated image of Trump as a muscular character holding a red lightsaber in front of American flags and bald eagles. In Star Wars, red lightsabers are characteristically associated with the Sith, the franchise's principal villains. The accompanying message accused Trump's opponents of attempting to return criminals to the country.</p>
+        <p class="source">Source: White House social-media post / Lead Stories verification, May 4, 2025.</p>
+        <p class="verdict">"Someone in communications missed one small piece of franchise lore."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex088" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex089"
+        data-topic="Government & Justice" data-year="2025"
+        data-country="United States"
+        data-claimtype="Ambiguous Statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 089</span><span class="exhibit-date">May 2025</span></div>
+        <h2>Do You Need to Uphold the Constitution?</h2>
+        <p>During an NBC Meet the Press interview about deportations and constitutional due process, Trump was asked whether citizens and non-citizens were entitled to due process. He replied that he did not know because he was not a lawyer. Asked directly whether the president needed to uphold the Constitution, he again answered: "I don't know."</p>
+        <p class="source">Source: NBC News, Meet the Press, May 4, 2025.</p>
+        <p class="verdict">"A question normally settled during the oath of office."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex089" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex090"
+        data-topic="Government & Justice" data-year="2025"
+        data-state="California" data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 090</span><span class="exhibit-date">May 2025</span></div>
+        <h2>Reopen Alcatraz</h2>
+        <p>Trump ordered federal agencies to explore rebuilding and reopening Alcatraz as a substantially enlarged prison for America's most dangerous offenders. The island's federal penitentiary had closed in 1963 because it was unusually expensive to operate. It is now a National Park Service site visited by tourists.</p>
+        <p class="source">Source: Reuters, May 4, 2025.</p>
+        <p class="verdict">"Sixty-two years of closure was judged sufficient."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex090" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex091"
+        data-topic="Economy & Trade" data-year="2025"
+        data-country="United States"
+        data-market="Film" data-tradepublic="Yes"
+        data-claimtype="Unexplained statement">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 091</span><span class="exhibit-date">May 2025</span></div>
+        <h2>The 100% Movie Tariff</h2>
+        <p>Trump announced plans for a 100 percent tariff on movies produced outside the United States, saying foreign incentives were causing America's film industry to die. The announcement offered little explanation of how a tariff would be applied to a film, particularly one produced across several countries. Film industries around the world began trying to determine what the proposal meant.</p>
+        <p class="source">Source: Reuters, May 4–7, 2025.</p>
+        <p class="verdict">"Global cinema met customs and excise."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex091" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex092"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="Qatar|United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 092</span><span class="exhibit-date">May 2025</span></div>
+        <h2>The Free $400 Million Plane</h2>
+        <p>Trump defended plans for the United States to accept a Boeing 747-8 offered by Qatar for presidential use. The aircraft was valued at roughly $400 million and was expected eventually to go to Trump's presidential library. Responding to ethics and security concerns, Trump said it would be "stupid" not to accept the plane.</p>
+        <p class="source">Source: Reuters, May 12–13, 2025.</p>
+        <p class="verdict">"Diplomatic gifts had apparently been overcomplicated all these years."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex092" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex093"
+        data-topic="Foreign Policy" data-year="2025"
+        data-country="South Africa|United States"
+        data-leader="Cyril Ramaphosa"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 093</span><span class="exhibit-date">May 2025</span></div>
+        <h2>Turn the Lights Down</h2>
+        <p>During an Oval Office meeting with South African President Cyril Ramaphosa, Trump ordered the lights lowered and had staff play video clips that he said demonstrated a genocide against white South Africans. He also displayed printed articles and images. Reuters subsequently checked several of the claims and found that material presented as evidence did not establish the alleged genocide.</p>
+        <p class="source">Source: Reuters video and fact check, May 21–22, 2025.</p>
+        <p class="verdict">"The bilateral meeting unexpectedly acquired audiovisual aids."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex093" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex094"
+        data-topic="Economy & Trade" data-year="2025"
+        data-country="United States"
+        data-market="Financial markets" data-tradepublic="Yes"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 094</span><span class="exhibit-date">May 2025</span></div>
+        <h2>The TACO Question</h2>
+        <p>A reporter asked Trump about the Wall Street expression "TACO trade," short for "Trump Always Chickens Out," referring to markets rising when tariff threats were postponed or reduced. Trump initially misheard the question, then defended his negotiation strategy at length. He finished by calling it a "nasty question" and then "the nastiest question."</p>
+        <p class="source">Source: Reuters video, May 28, 2025.</p>
+        <p class="verdict">"Wall Street invented an acronym and accidentally secured a presidential review."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex094" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex095"
+        data-topic="Personal Conduct" data-year="2025"
+        data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 095</span><span class="exhibit-date">May 2025</span></div>
+        <h2>Is Taylor Swift Still Hot?</h2>
+        <p>While returning from a presidential trip to the Middle East, Trump used Truth Social to revisit his criticism of Taylor Swift. He asked whether people had noticed that since he had declared "I HATE TAYLOR SWIFT," she was no longer "HOT." Swift had endorsed Kamala Harris during the 2024 presidential campaign.</p>
+        <p class="source">Source: CBS News / Donald Trump Truth Social post, May 16–17, 2025.</p>
+        <p class="verdict">"Four months into the presidency, the pop charts remained under review."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex095" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex096"
+        data-topic="Economy & Trade" data-year="2026"
+        data-country="United States"
+        data-claimtype="Disputed claim">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 096</span><span class="exhibit-date">Sep 2026</span></div>
+        <h2>The $5,000 Trump Dividend</h2>
+        <p>At the Republican midterm convention in Dallas, Trump promised a $5,000 payment to American adults if Republicans retained control of Congress. He described the proposed payment as a "Trump Dividend" financed through tariff revenue. Cost estimates for a payment at that scale ran to roughly $1 trillion, and no legislation had been introduced.</p>
+        <p class="source">Source: CNN, NPR, Time, and ABC News coverage of the Republican midterm convention, September 9–10, 2026.</p>
+        <p class="verdict">"The midterm platform acquired a cash-back programme."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex096" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex097"
+        data-topic="History & Facts" data-year="2026"
+        data-state="New Mexico" data-country="United States"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 097</span><span class="exhibit-date">Sep 2026</span></div>
+        <h2>New Mexico Becomes New America</h2>
+        <p>Trump shared maps and an AI-generated video promoting the idea of renaming New Mexico "New America," following earlier renamings of the Gulf of Mexico and Lake Ontario. Unlike those changes, New Mexico's name is written into its own state constitution, putting it beyond a president's unilateral authority. New Mexico's governor and both of its senators rejected the proposal.</p>
+        <p class="source">Source: CNN, Washington Post, Axios, and NBC News, September 6–8, 2026.</p>
+        <p class="verdict">"The atlas revision project reached the states — and hit a constitution."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex097" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
+      <article class="exhibit" data-id="ex098"
+        data-topic="Foreign Policy" data-year="2026"
+        data-country="Ireland|United Kingdom"
+        data-leader="Michea\u0301l Martin"
+        data-claimtype="Off-key remark">
+        <div class="exhibit-meta"><span class="exhibit-number">Exhibit 098</span><span class="exhibit-date">Sep 2026</span></div>
+        <h2>Trump Endorses a United Ireland</h2>
+        <p>During a visit to Dublin, Trump was asked about Irish reunification following a meeting with Taoiseach Micheál Martin. He said he would "love" to see a united Ireland, calling it "going to happen eventually" and predicting it "may as well happen now." The remark broke with decades of official U.S. neutrality on Northern Ireland's constitutional status, which under the Good Friday Agreement rests on democratic consent, not on a U.S. president's preference.</p>
+        <p class="source">Source: Washington Post, Al Jazeera, and NPR, September 12, 2026.</p>
+        <p class="verdict">"One of the most sensitive constitutional questions in Europe got the 'very cool' assessment."<span class="verdict-label">— curator's take</span></p>
+        <button class="vote-btn" data-id="ex098" aria-pressed="false"><span class="thumb">👍</span><span class="vote-count">0</span></button>
+      </article>
+
     </main>
+
+
 
     <div class="empty-state" id="emptyState" style="display:none;">
       No exhibits match that combination. Try clearing a filter.
@@ -619,16 +1655,23 @@
 
   <div class="wrap">
     <section class="support" id="support">
-      <h2>Support the Curator</h2>
-      <p class="support-blurb">Tips help keep the servers running and the case files growing.</p>
+      <h2>No Judgment Zone</h2>
+      <p class="support-blurb">You don't have to be a little relaxed to enjoy 98 stories about paper towels and Mars logistics. But if you are — hey, no judgment. A few bucks keeps the servers running either way.</p>
       <div class="amount-row" id="amountRow">
-        <button class="amount-btn" data-amount="300">$3</button>
-        <button class="amount-btn is-selected" data-amount="500">$5</button>
+        <button class="amount-btn" data-amount="200">$2</button>
+        <button class="amount-btn is-selected" data-amount="300">$3</button>
+        <button class="amount-btn" data-amount="500">$5</button>
         <button class="amount-btn" data-amount="1000">$10</button>
-        <button class="amount-btn" data-amount="2500">$25</button>
+      </div>
+      <div class="dare-row">
+        <span class="dare-label">Feeling like a big shot? We dare you.</span>
+        <div class="custom-amount-box">
+          <span class="dollar-prefix">$</span>
+          <input type="number" id="customAmount" min="1" max="50000" step="1" placeholder="10,000">
+        </div>
       </div>
       <div id="payment-element"></div>
-      <button id="submitDonate" class="donate-submit">Continue — $5</button>
+      <button id="submitDonate" class="donate-submit">Continue — $3</button>
       <p id="donateStatus" class="donate-status"></p>
 
       <div class="crypto-tip">
@@ -739,17 +1782,18 @@
 
   applyFilters();
 
-  // Donations — Stripe Element, mounted only after the visitor picks an
+  // Donations — Stripe Elements, mounted only after the visitor picks an
   // amount and hits Continue. The secret key never touches this file;
   // the PaymentIntent is created server-side by the Worker.
   (function () {
     var STRIPE_PUBLISHABLE_KEY = 'pk_test_51UEsnOH2PuEwLZfcgeYOnOE6JzojYaPjVvm4nnYrTVn6t43osobBnkCWaZTUKUawRM2gEEIUXRxrZ9fcnToCwlph00p4kvdwtT';
     var stripe = window.Stripe ? window.Stripe(STRIPE_PUBLISHABLE_KEY) : null;
     var elements = null;
-    var selectedAmount = 500;
+    var selectedAmount = 300;
     var intentReady = false;
 
     var amountButtons = document.querySelectorAll('.amount-btn');
+    var customInput = document.getElementById('customAmount');
     var submitBtn = document.getElementById('submitDonate');
     var statusEl = document.getElementById('donateStatus');
     var paymentBox = document.getElementById('payment-element');
@@ -767,9 +1811,21 @@
         amountButtons.forEach(function (b) { b.classList.remove('is-selected'); });
         btn.classList.add('is-selected');
         selectedAmount = parseInt(btn.getAttribute('data-amount'), 10);
+        if (customInput) customInput.value = '';
         resetPaymentStep();
       });
     });
+
+    if (customInput) {
+      customInput.addEventListener('input', function () {
+        var dollars = parseInt(customInput.value, 10);
+        if (Number.isInteger(dollars) && dollars > 0) {
+          amountButtons.forEach(function (b) { b.classList.remove('is-selected'); });
+          selectedAmount = dollars * 100;
+          resetPaymentStep();
+        }
+      });
+    }
 
     if (submitBtn) {
       submitBtn.addEventListener('click', async function () {
