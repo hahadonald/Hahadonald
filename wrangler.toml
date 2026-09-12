@@ -1,4 +1,4 @@
-name = "hahadonald-site"
+name = "hahadonald"
 type = "javascript"
 main = "src/index.js"
 compatibility_date = "2026-09-01"
