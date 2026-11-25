@@ -380,6 +380,126 @@
     render();
   }
 
+  // ------------------------------------------------------------------ game: Name that file
+  (function initGame() {
+    var dlg = $('#gameModal');
+    var dataEl = $('#gameData');
+    if (!dlg || !dataEl || !dlg.showModal) return;
+    var items;
+    try { items = JSON.parse(dataEl.textContent); } catch (e) { return; }
+    // Skip takes that give the title away.
+    items = items.filter(function (it) { return it.v.toLowerCase().indexOf(it.t.toLowerCase()) === -1; });
+    if (items.length < 8) return;
+
+    var body = $('#gameBody');
+    var ROUNDS = 5;
+    var rounds, idx, score;
+
+    function shuffle(a) {
+      a = a.slice();
+      for (var i = a.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+      return a;
+    }
+    function el(tag, cls, text) {
+      var n = document.createElement(tag);
+      if (cls) n.className = cls;
+      if (text != null) n.textContent = text;
+      return n;
+    }
+
+    function start() {
+      var picks = shuffle(items).slice(0, ROUNDS);
+      rounds = picks.map(function (it) {
+        var others = shuffle(items.filter(function (o) { return o.s !== it.s && o.t !== it.t; })).slice(0, 3);
+        return { item: it, options: shuffle(others.concat([it])) };
+      });
+      idx = 0;
+      score = 0;
+      renderRound();
+    }
+
+    function progress() {
+      var p = el('div', 'game-prog');
+      for (var i = 0; i < ROUNDS; i++) p.appendChild(el('i', i < idx ? 'done' : ''));
+      return p;
+    }
+
+    function renderRound() {
+      var r = rounds[idx];
+      body.innerHTML = '';
+      body.appendChild(progress());
+      var q = el('p', 'game-q');
+      q.appendChild(el('small', '', 'Round ' + (idx + 1) + ' of ' + ROUNDS + ' · which file is this the curator\u2019s take on?'));
+      q.appendChild(document.createTextNode('\u201c' + r.item.v + '\u201d'));
+      body.appendChild(q);
+      var opts = el('div', 'game-opts');
+      r.options.forEach(function (o) {
+        var b = el('button', 'game-opt', o.t);
+        b.type = 'button';
+        b.addEventListener('click', function () { answer(b, o, opts, r); });
+        opts.appendChild(b);
+      });
+      body.appendChild(opts);
+    }
+
+    function answer(btn, chosen, opts, r) {
+      var right = chosen.s === r.item.s;
+      if (right) score++;
+      Array.prototype.forEach.call(opts.children, function (b) {
+        b.disabled = true;
+        if (b.textContent === r.item.t) b.classList.add('is-right');
+      });
+      if (!right) btn.classList.add('is-wrong');
+      idx++;
+      var after = el('div', 'game-after');
+      after.appendChild(el('span', 'msg', right ? 'Correct.' : 'Not quite: it was \u201c' + r.item.t + '\u201d.'));
+      var read = el('a', 'btn btn-sm', 'Read the file');
+      read.href = '/files/' + r.item.s;
+      read.target = '_blank';
+      read.rel = 'noopener';
+      after.appendChild(read);
+      var next = el('button', 'btn btn-primary btn-sm', idx < ROUNDS ? 'Next →' : 'See my score');
+      next.type = 'button';
+      next.addEventListener('click', idx < ROUNDS ? renderRound : renderResult);
+      after.appendChild(next);
+      body.appendChild(after);
+      next.focus();
+    }
+
+    function renderResult() {
+      var rank = ['Casual observer', 'Casual observer', 'Junior archivist', 'Senior archivist', 'Keeper of the files', 'Chief of the files'][score];
+      var text = 'I scored ' + score + '/' + ROUNDS + ' on Name That File (' + rank + '). Can you beat me? https://hahadonald.com';
+      body.innerHTML = '';
+      body.appendChild(progress());
+      body.appendChild(el('p', 'game-rank', rank));
+      body.appendChild(el('div', 'game-score', score + '/' + ROUNDS));
+      var after = el('div', 'game-after');
+      var again = el('button', 'btn btn-primary btn-sm', 'Play again');
+      again.type = 'button';
+      again.addEventListener('click', start);
+      after.appendChild(again);
+      var x = el('a', 'btn btn-sm', 'Share on X');
+      x.href = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(text);
+      x.target = '_blank'; x.rel = 'noopener';
+      after.appendChild(x);
+      var wa = el('a', 'btn btn-sm', 'WhatsApp');
+      wa.href = 'https://api.whatsapp.com/send?text=' + encodeURIComponent(text);
+      wa.target = '_blank'; wa.rel = 'noopener';
+      after.appendChild(wa);
+      var cp = el('button', 'btn btn-sm', 'Copy result');
+      cp.type = 'button';
+      cp.setAttribute('data-copy', text);
+      after.appendChild(cp);
+      body.appendChild(after);
+    }
+
+    $$('[data-play]').forEach(function (b) {
+      b.addEventListener('click', function () { start(); dlg.showModal(); dlg.scrollTop = 0; });
+    });
+    $('#gameClose').addEventListener('click', function () { dlg.close(); });
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) dlg.close(); });
+  })();
+
   // ------------------------------------------------------------------ donations (Stripe Elements)
   var submitBtn = $('#submitDonate');
   if (submitBtn) {

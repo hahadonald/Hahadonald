@@ -306,6 +306,7 @@ ${nav()}
   <div class="cta-row">
     <a class="btn btn-primary" href="/random">🎲 Show me a random Donald</a>
     <a class="btn" href="#archive">Browse the archive</a>
+    <button class="btn btn-ghost" type="button" data-play>🎯 Name that file</button>
   </div>
   <ul class="stats">
     <li><b>${total}</b>files</li>
@@ -326,6 +327,11 @@ ${nav()}
     <a class="btn btn-ghost" href="/random">🎲 Another one</a>
   </div>
   <div class="ghost-num">${pad(featured.number)}</div>
+</div></div></section>
+
+<section class="game-sec"><div class="wrap"><div class="game-card">
+  <div><p class="eyebrow">Think you know the files?</p><h2>Name that file</h2><p>Five curator&rsquo;s takes. Four possible files each. How many can you place?</p></div>
+  <button class="btn btn-primary" type="button" data-play>🎯 Play · 5 rounds</button>
 </div></div></section>
 
 <section class="archive wrap" id="archive">
@@ -356,6 +362,8 @@ ${contactSection()}
 ${footer()}
 
 <dialog class="file-modal" id="fileModal" aria-label="Exhibit"><button class="modal-close" type="button" id="modalClose" aria-label="Close">✕</button><div class="modal-in" id="modalBody"></div></dialog>
+<dialog class="file-modal" id="gameModal" aria-label="Name that file"><button class="modal-close" type="button" id="gameClose" aria-label="Close">✕</button><div class="modal-in" id="gameBody"></div></dialog>
+<script type="application/json" id="gameData">${JSON.stringify(rows.map((r) => ({ t: r.title, v: String(r.verdict || "").replace(/^["“]|["”]$/g, ""), s: r.slug }))).replace(/</g, "\\u003c")}</script>
 <script>window.__STRIPE_PK__=${JSON.stringify(STRIPE_PUBLISHABLE_KEY)};</script>
 </body>
 </html>`;
