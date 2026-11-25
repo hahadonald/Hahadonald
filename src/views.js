@@ -165,6 +165,7 @@ function nav() {
     <a href="/#archive">Archive</a>
     <a href="/random">Random</a>
     <a href="/#archive" data-nav-sort="votes">Top voted</a>
+    <a href="/about">About</a>
     <a href="/#contact">Send a file</a>
   </nav>
   <a class="nav-donate" href="/#support"><span class="long">☕ Keep this nonsense online — </span><span class="short">☕ </span>$3</a>
@@ -175,7 +176,7 @@ function footer() {
   return `<footer>
   <p>Satire and commentary based on publicly reported events. Filed for entertainment, not for the historical record.</p>
   <p class="footer-tagline">Satire. Real events. Sources provided.</p>
-  <p>© 2026 hahadonald.com · <a href="/#contact">Contact</a> · <a href="/#contact">Corrections</a> · <a href="/rss.xml">RSS</a></p>
+  <p>© 2026 hahadonald.com · <a href="/#contact">Contact</a> · <a href="/#contact">Corrections</a> · <a href="/about">About</a> · <a href="/rss.xml">RSS</a></p>
 </footer>`;
 }
 
@@ -184,6 +185,22 @@ function midNudge(kind) {
     return `<div class="mid-nudge"><div><strong>Enjoying the files?</strong><span>Buy the archivist a coffee. Takes ten seconds.</span></div><a class="btn btn-primary" href="/#support">☕ Keep it going — $3</a></div>`;
   }
   return `<div class="mid-nudge"><div><strong>Dozens of files, zero paywall.</strong><span>If it made you laugh, throw a few dollars into the evidence locker.</span></div><a class="btn btn-primary" href="/#support">Help keep the files open — $3</a></div>`;
+}
+
+function aboutBlock() {
+  return `<section class="about-block" id="about"><div class="wrap">
+    <div class="about-card">
+      <p class="eyebrow">About the files</p>
+      <h2>Not here to tell you what to think.<br>Here&rsquo;s what happened. Here&rsquo;s the source.</h2>
+      <p class="about-lede">The Donald Files is an independent archive of documented Donald Trump incidents. Every file is a real event with a named source you can check for yourself. The jokes live in the one-line curator&rsquo;s take. The facts don&rsquo;t get embellished.</p>
+      <ul class="about-points">
+        <li><b>Real events</b><span>Nothing staged, nothing invented. If it&rsquo;s in the archive, it happened.</span></li>
+        <li><b>Check it yourself</b><span>Each file names its source and date. Follow it and see.</span></li>
+        <li><b>Free to share</b><span>Link to us or use the material freely. A link back is appreciated.</span></li>
+      </ul>
+      <a class="btn" href="/about">How the archive works →</a>
+    </div>
+  </div></section>`;
 }
 
 function supportSection() {
@@ -333,6 +350,7 @@ ${ordered.map((ex) => card(ex, voteCounts[ex.legacy_id] || 0)).join("\n")}
   <div class="load-more"><button class="btn" id="loadMore" type="button">Load 12 more files</button></div>
 </section>
 
+${aboutBlock()}
 ${supportSection()}
 ${contactSection()}
 ${footer()}
@@ -414,6 +432,56 @@ ${nav()}
   <p style="color:var(--muted)">Or it never existed. Either way, there are plenty more.</p>
   <div><a class="btn btn-primary" href="/random">🎲 Show me a random Donald</a> <a class="btn" href="/">Back to the archive</a></div>
 </div></main>
+${footer()}
+</body>
+</html>`;
+}
+
+export function renderAbout() {
+  return `${head({
+    title: "About — The Donald Files",
+    description: "What The Donald Files is, how every file is sourced, how corrections work, and how you can use the material.",
+    canonical: SITE + "/about",
+    ogType: "website",
+  })}
+${nav()}
+<main class="page">
+  <div class="page-grid prose">
+    <div>
+      <a class="crumb" href="/">← The archive</a>
+      <p class="eyebrow">About</p>
+      <h1 class="about-title">What this is, and the rules we play by</h1>
+      <p class="about-lede">The Donald Files is an independent archive of documented Donald Trump incidents: the odd, the unforced and the hard-to-believe. It exists because the real record is often funnier and stranger than anything you could make up, and it is easy to lose track of. So it is written down, with receipts.</p>
+
+      <h2>The rules</h2>
+      <ol>
+        <li><b>Every file has a named source and a date.</b> No source, no file.</li>
+        <li><b>No invented quotes.</b> Words appear in quotation marks only when the source prints them. Paraphrase is never dressed up as a quote.</li>
+        <li><b>Facts and jokes are kept apart.</b> The body of each file is the record. The one-line curator&rsquo;s take underneath is commentary, and it is the only place opinion lives.</li>
+        <li><b>Disputes are attributed.</b> Where a claim has been checked, we say who checked it and what they found, rather than asserting a verdict ourselves.</li>
+      </ol>
+
+      <h2>Verify it yourself</h2>
+      <p>You should not have to take our word for anything. Each file lists where its facts come from. Follow the source and compare. If what we wrote doesn&rsquo;t match, we want to know.</p>
+
+      <h2>Corrections</h2>
+      <p>Mistakes happen. If you spot one, email <a href="mailto:corrections@hahadonald.com">corrections@hahadonald.com</a>. Corrections are recorded as a new version of the file rather than a silent edit, and the earlier text is kept on record.</p>
+
+      <h2>Using our material</h2>
+      <p>Everything here can be independently verified, and you are free to link to us or use the information. You don&rsquo;t need to ask permission. A link back to the file is appreciated, and it helps other people check the source.</p>
+
+      <h2>Satire</h2>
+      <p>The commentary is satire. The events are not. This is entertainment, not the historical record, so use the sources for anything that matters.</p>
+
+      <h2>Keeping it running</h2>
+      <p>The archive is free, with no ads and no paywall. Donations cover hosting and the time it takes to research and check new files.</p>
+      <p><a class="btn btn-primary" href="/#support">☕ Keep this nonsense online &mdash; $3</a></p>
+
+      <h2>Got a real story for the files?</h2>
+      <p>Send it to <a href="mailto:files@hahadonald.com">files@hahadonald.com</a> with a link to a reliable source. Other questions go to <a href="mailto:hello@hahadonald.com">hello@hahadonald.com</a>.</p>
+    </div>
+  </div>
+</main>
 ${footer()}
 </body>
 </html>`;

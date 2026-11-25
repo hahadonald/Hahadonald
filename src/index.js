@@ -1,4 +1,4 @@
-import { SITE, plain, renderHomepage, renderExhibitPage, renderNotFound } from "./views.js";
+import { SITE, plain, renderHomepage, renderExhibitPage, renderNotFound, renderAbout } from "./views.js";
 
 export default {
   async fetch(request, env) {
@@ -23,6 +23,10 @@ export default {
     if (url.pathname.startsWith("/files/") && request.method === "GET") {
       const slug = url.pathname.slice("/files/".length).replace(/\/$/, "");
       return handleExhibitPage(slug, env);
+    }
+
+    if (url.pathname === "/about" && request.method === "GET") {
+      return new Response(renderAbout(), { headers: { "Content-Type": "text/html; charset=utf-8" } });
     }
 
     if (url.pathname === "/random" && request.method === "GET") {
@@ -351,7 +355,7 @@ async function handleSitemap(env) {
     "SELECT slug, created_at FROM exhibits WHERE is_current = 1 ORDER BY number ASC"
   ).all();
 
-  const urls = [`  <url>\n    <loc>${SITE}/</loc>\n    <changefreq>daily</changefreq>\n  </url>`]
+  const urls = [`  <url>\n    <loc>${SITE}/</loc>\n    <changefreq>daily</changefreq>\n  </url>`, `  <url>\n    <loc>${SITE}/about</loc>\n  </url>`]
     .concat(
       results.map((r) => {
         const date = new Date((r.created_at || 0) * 1000).toISOString().slice(0, 10);
