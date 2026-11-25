@@ -1,7 +1,7 @@
 import { SITE, plain, renderHomepage, renderExhibitPage, renderNotFound, renderAbout } from "./views.js";
 
 export default {
-  async fetch(request, env) {
+  async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
     if (url.pathname === "/api/vote" && request.method === "GET") {
@@ -22,7 +22,11 @@ export default {
 
     if (url.pathname.startsWith("/files/") && request.method === "GET") {
       const slug = url.pathname.slice("/files/".length).replace(/\/$/, "");
-      return handleExhibitPage(slug, env);
+      return handleExhibitPage(slug, env, request, ctx);
+    }
+
+    if (url.pathname === "/api/view" && request.method === "POST") {
+      return handleViewBeacon(request, env, ctx);
     }
 
     if (url.pathname === "/about" && request.method === "GET") {
@@ -300,7 +304,44 @@ async function handleHomepage(request, env) {
   });
 }
 
-async function handleExhibitPage(slug, env) {
+// ---------------------------------------------------------------------
+// Silent read counter: one aggregate row per exhibit per day. No visitor
+// IDs, no IPs. Counts real page opens only (bots and link-preview fetchers
+// are skipped). Not shown on the site; query page_views in D1.
+// ---------------------------------------------------------------------
+
+const BOT_RE = /bot|crawl|spider|slurp|preview|facebookexternalhit|whatsapp|embedly|curl|wget|python|headless|lighthouse|monitor|uptime|fetch/i;
+
+function isBot(request) {
+  const ua = request.headers.get("User-Agent") || "";
+  return !ua || BOT_RE.test(ua);
+}
+
+async function recordView(env, slug) {
+  try {
+    const day = new Date().toISOString().slice(0, 10);
+    await env.DB.prepare(
+      `INSERT INTO page_views (slug, day, views)
+       SELECT ?1, ?2, 1 WHERE EXISTS (SELECT 1 FROM exhibits WHERE slug = ?1 AND is_current = 1)
+       ON CONFLICT (slug, day) DO UPDATE SET views = views + 1`
+    ).bind(slug, day).run();
+  } catch (err) {
+    // Analytics must never break a page.
+  }
+}
+
+async function handleViewBeacon(request, env, ctx) {
+  if (!isBot(request)) {
+    try {
+      const body = await request.json();
+      const slug = body && typeof body.slug === "string" ? body.slug.slice(0, 120) : "";
+      if (slug && ctx) ctx.waitUntil(recordView(env, slug));
+    } catch (err) { /* ignore malformed beacons */ }
+  }
+  return new Response(null, { status: 204 });
+}
+
+async function handleExhibitPage(slug, env, request, ctx) {
   const ex = await env.DB.prepare(
     "SELECT * FROM exhibits WHERE slug = ?1 AND is_current = 1"
   ).bind(slug).first();
@@ -308,6 +349,8 @@ async function handleExhibitPage(slug, env) {
   if (!ex) {
     return new Response(renderNotFound(), { status: 404, headers: HTML_HEADERS });
   }
+
+  if (ctx && !isBot(request)) ctx.waitUntil(recordView(env, ex.slug));
 
   const voteCounts = await loadVoteCounts(env);
   const [prev, next, relatedSame, relatedAny] = await Promise.all([

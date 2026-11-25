@@ -33,3 +33,12 @@ Votes follow `legacy_id`, so they carry over.
 
 ## Schema
 See `src/migrations/0002_exhibits.sql`.
+
+## Reads (silent counter)
+Reads are counted per exhibit per day in `page_views` (permalink loads and pop-up opens; bots skipped). Not shown on the site.
+
+```sql
+-- Most read, last 7 days
+SELECT slug, SUM(views) AS reads FROM page_views
+WHERE day >= date('now', '-7 day') GROUP BY slug ORDER BY reads DESC LIMIT 10;
+```

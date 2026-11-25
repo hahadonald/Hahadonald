@@ -353,6 +353,10 @@
       if (!dlg.open) dlg.showModal();
       dlg.scrollTop = 0;
       try { history.pushState({ file: href }, '', href); } catch (err) { /* non-fatal */ }
+      // Count the read (the pop-up never loads the permalink page itself).
+      try {
+        navigator.sendBeacon('/api/view', new Blob([JSON.stringify({ slug: href.replace('/files/', '') })], { type: 'application/json' }));
+      } catch (err) { /* non-fatal */ }
     }
 
     document.addEventListener('click', function (e) {
