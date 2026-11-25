@@ -26,6 +26,26 @@ const WTFS = new Set([
 ]);
 const NEW_FROM_NUMBER = 99;
 
+// Visitor-facing topic groups. Raw `topic` values in D1 stay as they are;
+// unknown topics fall back to their own name so nothing disappears.
+const TOPIC_GROUPS = {
+  "Foreign Policy": "Foreign Affairs",
+  "Personal Conduct": "Personal Conduct",
+  "Media & Communications": "Words & Media",
+  "Public Health": "COVID & Health",
+  "Government & Justice": "Government & Law",
+  "Government & Military": "Government & Law",
+  "Immigration": "Government & Law",
+  "Economy & Trade": "Economy & Trade",
+  "History & Facts": "Science & History",
+  "Science & Space": "Science & History",
+  "Environment & Energy": "Science & History",
+  "Environment & Weather": "Science & History",
+};
+export function groupOf(topic) {
+  return TOPIC_GROUPS[topic] || topic || "Other";
+}
+
 // ---------------------------------------------------------------- helpers
 
 export function esc(s) {
@@ -217,7 +237,7 @@ function card(ex, count) {
   const facets = ["claimtype", "country", "leader", "adversary", "state", "city"]
     .map((k) => `data-${k}="${esc(ex[k])}"`)
     .join(" ");
-  return `<article class="card" data-id="${esc(ex.legacy_id)}" data-num="${ex.number}" data-n="${pad(ex.number)}" data-term="${termOf(ex)}" data-topic="${esc(ex.topic)}" ${facets} data-text="${esc(haystack)}">
+  return `<article class="card" data-id="${esc(ex.legacy_id)}" data-num="${ex.number}" data-n="${pad(ex.number)}" data-term="${termOf(ex)}" data-topic="${esc(ex.topic)}" data-group="${esc(groupOf(ex.topic))}" ${facets} data-text="${esc(haystack)}">
   <a class="card-link" href="/files/${ex.slug}" data-open>
     <div class="card-top"><span>№ ${pad(ex.number)}</span><span>${esc(ex.date_label)}</span></div>
     <div class="badges">${badgesFor(ex)}</div>
@@ -233,7 +253,7 @@ export function renderHomepage({ rows, voteCounts, featured, today }) {
   const total = rows.length;
   const ordered = rows.slice().sort((a, b) => b.number - a.number);
   const topics = new Map();
-  for (const r of rows) topics.set(r.topic, (topics.get(r.topic) || 0) + 1);
+  for (const r of rows) topics.set(groupOf(r.topic), (topics.get(groupOf(r.topic)) || 0) + 1);
   const topicPills = [...topics.entries()]
     .sort((a, b) => b[1] - a[1])
     .map(([t, n]) => `<button class="pill" type="button" data-topic-pill="${esc(t)}">${esc(t)} <span class="count">${n}</span></button>`)
@@ -297,7 +317,6 @@ ${nav()}
     <div class="seg" id="sortSeg">
       <button class="pill is-active" type="button" data-sort="latest">Latest</button>
       <button class="pill" type="button" data-sort="votes">Top voted</button>
-      <button class="pill" type="button" data-sort="oldest">Oldest first</button>
       <span style="flex:0 0 12px"></span>
       <button class="pill" type="button" data-term-pill="first">First term <span class="count">${firstCount}</span></button>
       <button class="pill" type="button" data-term-pill="second">Second term <span class="count">${secondCount}</span></button>

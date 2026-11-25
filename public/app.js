@@ -133,9 +133,7 @@
       { key: 'claimtype', label: 'Kind of moment' },
       { key: 'country', label: 'Country mentioned' },
       { key: 'leader', label: 'Foreign leader mentioned' },
-      { key: 'adversary', label: 'Adversary mentioned' },
-      { key: 'state', label: 'American state mentioned' },
-      { key: 'city', label: 'American city mentioned' }
+      { key: 'adversary', label: 'Adversary mentioned' }
     ];
     var groups = $('#filterGroups');
     function tagsOf(card, key) {
@@ -184,7 +182,7 @@
     }
     function matches(card) {
       if (state.term && card.getAttribute('data-term') !== state.term) return false;
-      if (state.topic && card.getAttribute('data-topic') !== state.topic) return false;
+      if (state.topic && card.getAttribute('data-group') !== state.topic) return false;
       if (state.q) {
         var hay = card.getAttribute('data-text') || '';
         var tokens = state.q.split(/\s+/).filter(Boolean);
