@@ -394,6 +394,18 @@
     var statusEl = $('#donateStatus');
     var paymentBox = $('#payment-element');
 
+    var APPEARANCE = {
+      theme: 'night',
+      variables: {
+        colorPrimary: '#ffc83d',
+        colorBackground: '#0b0c10',
+        colorText: '#eceef3',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        borderRadius: '10px'
+      }
+    };
+    var expressElements = null;
+
     var label = function () { return '$' + (amount / 100).toFixed(amount % 100 ? 2 : 0); };
     var resetPaymentStep = function () {
       intentReady = false;
@@ -401,7 +413,55 @@
       paymentBox.innerHTML = '';
       paymentBox.style.display = 'none';
       submitBtn.textContent = 'Continue — ' + label();
+      if (expressElements) expressElements.update({ amount: amount });
     };
+
+    // One-tap Apple Pay / Google Pay / Link. Hidden unless this device supports one.
+    function initExpress() {
+      var wrap = $('#expressWrap');
+      if (!stripe || !wrap || !stripe.elements) return;
+      try {
+        expressElements = stripe.elements({ mode: 'payment', amount: amount, currency: 'usd', appearance: APPEARANCE });
+        var express = expressElements.create('expressCheckout', {
+          buttonHeight: 48,
+          buttonType: { applePay: 'donate', googlePay: 'donate' }
+        });
+        express.mount('#express-checkout');
+        express.on('ready', function (e) {
+          var m = (e && e.availablePaymentMethods) || null;
+          wrap.hidden = !(m && Object.keys(m).some(function (k) { return m[k]; }));
+        });
+        express.on('confirm', function () {
+          statusEl.textContent = 'Processing...';
+          expressElements.submit()
+            .then(function (sub) {
+              if (sub.error) throw new Error(sub.error.message);
+              return fetch('/api/donate/create-intent', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ amount: amount, currency: 'usd' })
+              });
+            })
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+              if (!data.clientSecret) throw new Error(data.error || 'no client secret');
+              return stripe.confirmPayment({
+                elements: expressElements,
+                clientSecret: data.clientSecret,
+                confirmParams: { return_url: window.location.href },
+                redirect: 'if_required'
+              });
+            })
+            .then(function (result) {
+              if (result.error) throw new Error(result.error.message || 'Payment failed.');
+              statusEl.textContent = 'Thank you — genuinely.';
+              wrap.hidden = true;
+              submitBtn.style.display = 'none';
+            })
+            .catch(function (err) { statusEl.textContent = 'Error: ' + (err && err.message ? err.message : 'unknown failure'); });
+        });
+      } catch (err) { wrap.hidden = true; }
+    }
 
     amountButtons.forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -424,6 +484,8 @@
       });
     }
 
+    initExpress();
+
     submitBtn.addEventListener('click', function () {
       if (!stripe) { statusEl.textContent = 'Payment form unavailable right now.'; return; }
 
@@ -440,16 +502,7 @@
             if (!data.clientSecret) throw new Error(data.error || 'no client secret');
             elements = stripe.elements({
               clientSecret: data.clientSecret,
-              appearance: {
-                theme: 'night',
-                variables: {
-                  colorPrimary: '#ffc83d',
-                  colorBackground: '#0b0c10',
-                  colorText: '#eceef3',
-                  fontFamily: 'Inter, system-ui, sans-serif',
-                  borderRadius: '10px'
-                }
-              }
+              appearance: APPEARANCE
             });
             elements.create('payment').mount('#payment-element');
             paymentBox.style.display = 'block';

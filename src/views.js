@@ -187,6 +187,10 @@ function supportSection() {
       <span class="dare-label">Feeling like a big shot? We dare you.</span>
       <div class="custom-amount-box"><span class="dollar-prefix">$</span><input type="number" id="customAmount" min="1" max="50000" step="1" placeholder="10,000" aria-label="Custom amount in dollars"></div>
     </div>
+    <div id="expressWrap" hidden>
+      <div id="express-checkout"></div>
+      <p class="or-divider"><span>or pay by card</span></p>
+    </div>
     <div id="payment-element"></div>
     <button id="submitDonate" class="donate-submit" type="button">Continue — $3</button>
     <p id="donateStatus" class="donate-status" role="status"></p>

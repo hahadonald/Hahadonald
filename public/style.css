@@ -351,6 +351,9 @@ dialog.file-modal::backdrop { background: rgba(5, 6, 8, 0.74); backdrop-filter: 
 .dollar-prefix { color: var(--faint); font: 700 1rem var(--font-mono); }
 .custom-amount-box input { width: 120px; padding: 13px 8px; background: none; border: none; color: var(--text); font: 700 1rem var(--font-mono); }
 .custom-amount-box input:focus { outline: none; }
+#express-checkout { max-width: 520px; }
+.or-divider { display: flex; align-items: center; gap: 14px; max-width: 520px; margin: 16px 0 18px; color: var(--faint); font: 500 0.75rem var(--font-mono); letter-spacing: 0.1em; text-transform: uppercase; }
+.or-divider::before, .or-divider::after { content: ""; flex: 1; height: 1px; background: var(--line); }
 #payment-element { display: none; margin: 8px 0 20px; max-width: 520px; padding: 18px; border-radius: 14px; background: var(--bg); border: 1px solid var(--line); }
 .donate-submit { padding: 17px 28px; font-size: 1.02rem; border: none; cursor: pointer; border-radius: 999px; background: var(--accent); color: var(--accent-ink); font-weight: 800; font-family: var(--font-body); }
 .donate-submit:hover { background: #ffd566; }
